@@ -133,3 +133,34 @@ Matrix4x4 MakeIdentity4x4()
 		0,0,0,1
 		});
 }
+
+Matrix4x4 MakeRotateXMatrix(float radian)
+{
+	return Matrix4x4({
+		1,0,0,0,
+		0,std::cosf(radian),std::sinf(radian),0,
+		0,-std::sinf(radian),std::cosf(radian),0,
+		0,0,0,1
+
+		});
+}
+
+Matrix4x4 MakeRotateYMatrix(float radian)
+{
+	return Matrix4x4({
+		std::cosf(radian),0,-std::sinf(radian),0,
+		0,1,0,0,
+		std::sinf(radian),0,std::cosf(radian),0,
+		0,0,0,1
+		});
+}
+
+Matrix4x4 MakeRotateZMatrix(float radian)
+{
+	return Matrix4x4({
+		std::cosf(radian),std::sinf(radian),0,0,
+		-std::sinf(radian),std::cosf(radian),0,0,
+		0,0,1,0,
+		0,0,0,1
+		});
+}
