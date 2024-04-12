@@ -23,6 +23,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Matrix4x4 resultAdd = Add(m1, m2);
 	Matrix4x4 resultSubtract = Subtract(m1, m2);
 	Matrix4x4 resultMultiply = Multiply(m1, m2);
+	Matrix4x4 resultInverse1 = Inverse(m1);
+	Matrix4x4 resultInverse2 = Inverse(m2);
+	Matrix4x4 resultTranspose1 = Transpose(m1);
+	Matrix4x4 resultTranspose2 = Transpose(m2);
+	Matrix4x4 identity = MakeIdentity4x4();
 	// キー入力結果を受け取る箱
 	char keys[256] = { 0 };
 	char preKeys[256] = { 0 };
@@ -53,6 +58,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4ScreenPrintf(0, 0, resultAdd, "Add");
 		Matrix4x4ScreenPrintf(0, kRowheight*5, resultSubtract, "Subtract");
 		Matrix4x4ScreenPrintf(0, kRowheight*10, resultMultiply, "Multiply");
+		Matrix4x4ScreenPrintf(0, kRowheight*15, resultInverse1, "InverseM1");
+		Matrix4x4ScreenPrintf(0, kRowheight*20, resultInverse2, "InverseM2");
+		Matrix4x4ScreenPrintf(kColWidth*5, 0, resultTranspose1, "TransposeM1");
+		Matrix4x4ScreenPrintf(kColWidth * 5, kRowheight*5, resultTranspose2, "TransposeM2");
+		Matrix4x4ScreenPrintf(kColWidth * 5, kRowheight*10, identity, "identity");
 
 		///------------------///
 		/// ↑描画処理ここまで
