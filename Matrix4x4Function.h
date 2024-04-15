@@ -24,3 +24,6 @@ Matrix4x4 MakeIdentity4x4();
 Matrix4x4 MakeRotateXMatrix(float radian);
 Matrix4x4 MakeRotateYMatrix(float radian);
 Matrix4x4 MakeRotateZMatrix(float radian);
+
+Matrix4x4 MakeRotateXYZMatrix(float radianX, float radianY, float radianZ);
+

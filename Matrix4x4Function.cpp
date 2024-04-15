@@ -164,3 +164,12 @@ Matrix4x4 MakeRotateZMatrix(float radian)
 		0,0,0,1
 		});
 }
+
+Matrix4x4 MakeRotateXYZMatrix(float radianX, float radianY, float radianZ)
+{
+	Matrix4x4 mX = MakeRotateXMatrix(radianX);
+	Matrix4x4 mY = MakeRotateYMatrix(radianY);
+	Matrix4x4 mZ = MakeRotateZMatrix(radianZ);
+	Matrix4x4 mXYZ = Multiply(mX, Multiply(mY, mZ));
+	return mXYZ;
+}
