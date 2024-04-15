@@ -1,7 +1,5 @@
 #include <Novice.h>
-#include "Vector3Math.h"
-#include "Matrix4x4Function.h"
-#include "Vec3Mat4x4Function.h"
+#include "Vector3AndMatrix4x4.h"
 const char kWindowTitle[] = "LD2A_01_ヒサイチ_コウキ";
 
 // Windowsアプリでのエントリーポイント(main関数)
