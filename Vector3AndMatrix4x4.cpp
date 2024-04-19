@@ -1,5 +1,9 @@
 #include "Vector3AndMatrix4x4.h"
 #include <assert.h>
+float cotf(float a)
+{
+	return cosf(a)/sinf(a);
+}
 void VectorScreenPrintf(int x, int y, const Vector3& vector, const char* label)
 {
 	Novice::ScreenPrintf(x, y, "%.02f", vector.x);
@@ -280,5 +284,67 @@ Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Ve
 	resultMatrix.m[3][1] = translate.y;
 	resultMatrix.m[3][2] = translate.z;
 	resultMatrix.m[3][3] = 1;
+	return resultMatrix;
+}
+
+Matrix4x4 MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip)
+{
+	Matrix4x4 resultMatrix{};
+	for (int y = 0; y < 4; y++)
+	{
+		for (int x = 0; x < 4; x++)
+		{
+			resultMatrix.m[y][x] = 0.0f;
+		}
+	}
+	//tanf/(-1)=cottangent
+	resultMatrix.m[0][0] = (1.0f / aspectRatio) * cotf(fovY/2.0f);
+	resultMatrix.m[1][1] = cotf(fovY/2.0f);
+	resultMatrix.m[2][2] = farClip/(farClip-nearClip);
+	resultMatrix.m[2][3] = 1;
+	resultMatrix.m[3][2] = (-nearClip*farClip)/(farClip-nearClip);
+	return resultMatrix;
+}
+
+Matrix4x4 MakeOrthographicMatrix(float left, float top, float right, float bottom, float nearClip, float farClip)
+{
+	Matrix4x4 resultMatrix{};
+	for (int y = 0; y < 4; y++)
+	{
+		for (int x = 0; x < 4; x++)
+		{
+			resultMatrix.m[y][x] = 0.0f;
+		}
+	}
+
+	resultMatrix.m[0][0] = 2 / (right - left);
+	resultMatrix.m[1][1] = 2 / (top - bottom);
+	resultMatrix.m[2][2] = 1 / (farClip - nearClip);
+	resultMatrix.m[3][0] = (left + right) / (left - right);
+	resultMatrix.m[3][1] = (top + bottom) / (bottom - top);
+	resultMatrix.m[3][2] = nearClip / (nearClip - farClip);
+	resultMatrix.m[3][3] = 1.0f;
+
+	return resultMatrix;
+}
+
+Matrix4x4 MakeViewportMatrix(float left, float top, float width, float height, float minDepth, float maxDepth)
+{
+	Matrix4x4 resultMatrix{};
+	for (int y = 0; y < 4; y++)
+	{
+		for (int x = 0; x < 4; x++)
+		{
+			resultMatrix.m[y][x] = 0.0f;
+		}
+	}
+	resultMatrix.m[0][0] = width / 2.0f;
+	resultMatrix.m[1][1] = -height / 2.0f;
+	resultMatrix.m[2][2] = maxDepth-minDepth;
+	resultMatrix.m[3][0] = left+width/2.0f;
+	resultMatrix.m[3][1] = top+height/2.0f;
+	resultMatrix.m[3][2] = minDepth;
+	resultMatrix.m[3][3] = 1.0f;
+
 	return resultMatrix;
 }

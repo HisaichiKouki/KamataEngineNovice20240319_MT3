@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <Novice.h>
 #include <Vector3.h>
 #include <Matrix4x4.h>
@@ -7,6 +7,14 @@
 
 static const int kColumWidth = 60;
 static const int kRowHeight = 20;
+
+/// <summary>
+/// tangentの逆数 cosf(a)/sinf(a)
+/// </summary>
+/// <param name="a"></param>
+/// <param name="b"></param>
+/// <returns></returns>
+float cotf(float a);
 
 //Vector3Math
 void VectorScreenPrintf(int x, int y, const Vector3& vector, const char* label);
@@ -47,3 +55,12 @@ Matrix4x4 MakeScaleMatrix(const Vector3& scale);
 Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix);
 Matrix4x4 MakeRotateXYZMatrix(const Vector3& rotate);
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
+
+//透視射影行列
+Matrix4x4 MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip);
+
+//正射影行列
+Matrix4x4 MakeOrthographicMatrix(float left, float top, float right, float bottom, float nearClip, float farClip);
+
+//ビューポート変換行列
+Matrix4x4 MakeViewportMatrix(float left, float top, float width, float height, float minDepth, float maxDepth);
