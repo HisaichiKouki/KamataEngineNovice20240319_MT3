@@ -16,16 +16,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	Vector3 kLocalVertices[3] = {
 		{0.0f,1.0f,0.0f},
-		{-1.0f,-1.0f,0.0f},
-		{1.0f,-1.0f,0.0f}
+		{1.0f,-1.0f,0.0f},
+		{-1.0f,-1.0f,0.0f}
 	};
+	Vector3 kTraiangleVector[2]{
+	Subtract(kLocalVertices[0],kLocalVertices[1]),
+	Subtract(kLocalVertices[1],kLocalVertices[2])
+	};
+
 	Vector3 rotate{};
 	Vector3 translate{};
-	float kAddRotation = 0.1f;
+	float kAddRotation = 0.05f;
 	float kAddMove = 0.2f;
 
 	Vector3 cameraPosition = { 0.0f,0.0f,-10.0f };
 
+	float twoFaces{};
 
 
 	// キー入力結果を受け取る箱
@@ -78,7 +84,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			Vector3 ndcVertex = Transform(kLocalVertices[i], worldviewProjectionMatrix);
 			screenVertices[i] = Transform(ndcVertex, viewportMatrix);
 		}
-
+		kTraiangleVector[0] = Subtract(screenVertices[0], screenVertices[1]);
+		kTraiangleVector[1] = Subtract(screenVertices[1], screenVertices[2]);
 		///------------------///
 		/// ↑更新処理ここまで
 		///------------------///
@@ -88,13 +95,30 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///------------------///
 
 		VectorScreenPrintf(0, 0, cross, "cross");
+		
+		twoFaces = Dot(cameraPosition, Cross(kTraiangleVector[0], kTraiangleVector[1]));
+		Novice::ScreenPrintf(0, 20, "twoFaces=%f", twoFaces);
+		Novice::ScreenPrintf(0, 40, "rotate.y=%f", rotate.y);
+		if (twoFaces <=0)
+		{
+			Novice::DrawTriangle(
+				int(screenVertices[0].x), int(screenVertices[0].y),
+				int(screenVertices[1].x), int(screenVertices[1].y),
+				int(screenVertices[2].x), int(screenVertices[2].y),
+				RED, kFillModeSolid
+			);
+		}
+		else
+		{
 
-		Novice::DrawTriangle(
-			int(screenVertices[0].x), int(screenVertices[0].y),
-			int(screenVertices[1].x), int(screenVertices[1].y),
-			int(screenVertices[2].x), int(screenVertices[2].y),
-			RED, kFillModeSolid
-		);
+			Novice::DrawTriangle(
+				int(screenVertices[0].x), int(screenVertices[0].y),
+				int(screenVertices[1].x), int(screenVertices[1].y),
+				int(screenVertices[2].x), int(screenVertices[2].y),
+				RED, kFillModeWireFrame
+			);
+		}
+		
 
 		///------------------///
 		/// ↑描画処理ここまで
