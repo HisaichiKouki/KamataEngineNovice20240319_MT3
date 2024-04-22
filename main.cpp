@@ -16,7 +16,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	Vector3 kLocalVertices[3] = {
 		{0.0f,1.0f,0.0f},
-		{1.0f,-1.0f,0.0f},
+		{1.0f,0.0f,0.0f},
 		{-1.0f,-1.0f,0.0f}
 	};
 	Vector3 kTraiangleVector[2]{
