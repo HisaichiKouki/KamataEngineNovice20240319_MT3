@@ -1,5 +1,8 @@
 #include <Novice.h>
 #include "Vector3AndMatrix4x4.h"
+#include "Glid.h"
+
+#include <imgui.h>
 const char kWindowTitle[] = "LD2A_01_ヒサイチ_コウキ";
 
 // Windowsアプリでのエントリーポイント(main関数)
@@ -29,9 +32,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	float kAddRotation = 0.05f;
 	float kAddMove = 0.2f;
 
-	Vector3 cameraPosition = { 0.0f,0.0f,-10.0f };
+	Vector3 cameraPosition = { 0.0f,0.0f,-15.0f };
 	Vector3 cameraVector = { 0,0,1 };
 
+	Vector3 cameraRotate{};
 	float twoFaces{};
 
 
@@ -78,7 +82,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 
 		Matrix4x4 worldMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, rotate, translate);
-		Matrix4x4 cameraMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, { 0,0,0 }, cameraPosition);
+		Matrix4x4 cameraMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, cameraRotate, cameraPosition);
 		Matrix4x4 viewMatrix = Inverse(cameraMatrix);
 		Matrix4x4 projectionMatrix = MakePerspectiveFovMatrix(0.45f, float(kWindowWidth) / float(kWindowHeight), 0.1f, 100.0f);
 		Matrix4x4 worldviewProjectionMatrix = Multiply(worldMatrix, Multiply(viewMatrix, projectionMatrix));
@@ -93,6 +97,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 		kTraiangleVector[0] = Subtract(worldVertices[0], worldVertices[1]);
 		kTraiangleVector[1] = Subtract(worldVertices[1], worldVertices[2]);
+
+
+		ImGui::DragFloat3("cameraPosition", &cameraPosition.x, 0.1f);
+		ImGui::DragFloat3("cameraRotate", &cameraRotate.x, 0.005f);
+
 		///------------------///
 		/// ↑更新処理ここまで
 		///------------------///
@@ -126,7 +135,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			);
 		}
 
-
+		DrawGridLine(Matrix4x4(Multiply(viewMatrix, projectionMatrix)), viewportMatrix);
 		///------------------///
 		/// ↑描画処理ここまで
 		///------------------///
