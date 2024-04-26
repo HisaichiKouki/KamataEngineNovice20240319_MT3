@@ -1,4 +1,7 @@
 #pragma once
 #include "Vector3AndMatrix4x4.h"
 #include <Novice.h>
+#include "Sphere.h"
 void DrawGridLine(const Matrix4x4& viewProjectionMat, const Matrix4x4& viewportMat);
+
+void DrawGridSphere(const Sphere& sphere, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);

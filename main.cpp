@@ -13,7 +13,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	const int kWindowHeight = 720;
 	Novice::Initialize(kWindowTitle, kWindowWidth, kWindowHeight);
 
-	Vector3 v1{ 1.2f,-3.9f,2.5f };
+	/*Vector3 v1{ 1.2f,-3.9f,2.5f };
 	Vector3 v2{ 2.8f,0.4f,-1.3f };
 	Vector3 cross = Cross(v1, v2);
 
@@ -25,20 +25,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Vector3 kTraiangleVector[2]{
 	Subtract(kLocalVertices[0],kLocalVertices[1]),
 	Subtract(kLocalVertices[1],kLocalVertices[2])
-	};
+	};*/
 
-	Vector3 rotate{};
-	Vector3 translate{};
-	float kAddRotation = 0.05f;
-	float kAddMove = 0.2f;
+	//Vector3 rotate{};
+	//Vector3 translate{};
+	//float kAddRotation = 0.05f;
+	//float kAddMove = 0.2f;
 
 	Vector3 cameraPosition = { 0.0f,0.0f,-15.0f };
 	Vector3 cameraVector = { 0,0,1 };
 
 	Vector3 cameraRotate{};
-	float twoFaces{};
+	//float twoFaces{};
 
-
+	Sphere spher{};
+	spher.radius = 5;
 	// キー入力結果を受け取る箱
 	char keys[256] = { 0 };
 	char preKeys[256] = { 0 };
@@ -56,7 +57,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///------------------///
 
-		if (keys[DIK_A])
+		/*if (keys[DIK_A])
 		{
 			translate.x -= kAddMove;
 		}
@@ -96,7 +97,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			screenVertices[i] = Transform(ndcVertex, viewportMatrix);
 		}
 		kTraiangleVector[0] = Subtract(worldVertices[0], worldVertices[1]);
-		kTraiangleVector[1] = Subtract(worldVertices[1], worldVertices[2]);
+		kTraiangleVector[1] = Subtract(worldVertices[1], worldVertices[2]);*/
+		Matrix4x4 cameraMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, cameraRotate, cameraPosition);
+		Matrix4x4 viewMatrix = Inverse(cameraMatrix);
+		Matrix4x4 projectionMatrix = MakePerspectiveFovMatrix(0.45f, float(kWindowWidth) / float(kWindowHeight), 0.1f, 100.0f);
+		Matrix4x4 viewportMatrix = MakeViewportMatrix(0, 0, float(kWindowWidth), float(kWindowHeight), 0.0f, 1.0f);
 
 
 		ImGui::DragFloat3("cameraPosition", &cameraPosition.x, 0.1f);
@@ -110,7 +115,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///------------------///
 
-		VectorScreenPrintf(0, 0, cross, "cross");
+		/*VectorScreenPrintf(0, 0, cross, "cross");
 
 		twoFaces = Dot(cameraVector, Cross(kTraiangleVector[0], kTraiangleVector[1]));
 		Novice::ScreenPrintf(0, 20, "twoFaces=%f", twoFaces);
@@ -133,9 +138,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				int(screenVertices[2].x), int(screenVertices[2].y),
 				RED, kFillModeWireFrame
 			);
-		}
+		}*/
 
 		DrawGridLine(Matrix4x4(Multiply(viewMatrix, projectionMatrix)), viewportMatrix);
+		DrawGridSphere(spher, Matrix4x4(Multiply(viewMatrix, projectionMatrix)), viewportMatrix, BLACK);
 		///------------------///
 		/// ↑描画処理ここまで
 		///------------------///
