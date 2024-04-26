@@ -39,7 +39,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//float twoFaces{};
 
 	Sphere spher{};
-	spher.radius = 5;
+	spher.radius = 1;
 	// キー入力結果を受け取る箱
 	char keys[256] = { 0 };
 	char preKeys[256] = { 0 };
@@ -102,10 +102,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 viewMatrix = Inverse(cameraMatrix);
 		Matrix4x4 projectionMatrix = MakePerspectiveFovMatrix(0.45f, float(kWindowWidth) / float(kWindowHeight), 0.1f, 100.0f);
 		Matrix4x4 viewportMatrix = MakeViewportMatrix(0, 0, float(kWindowWidth), float(kWindowHeight), 0.0f, 1.0f);
-
-
+		spher.worldMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, spher.rotate, spher.centor);
+		ImGui::Begin("Debug");
 		ImGui::DragFloat3("cameraPosition", &cameraPosition.x, 0.1f);
 		ImGui::DragFloat3("cameraRotate", &cameraRotate.x, 0.005f);
+		ImGui::End();
+		if (ImGui::TreeNode("spher"))
+		{
+			ImGui::DragFloat3("spherePos", &spher.centor.x, 0.1f);
+			ImGui::SliderFloat("sphereRadius", &spher.radius, 0.01f, 100.0f);
+			ImGui::DragFloat3("sphereRotate", &spher.rotate.x, 0.1f);
+			ImGui::TreePop();
+		}
 
 		///------------------///
 		/// ↑更新処理ここまで
@@ -139,9 +147,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				RED, kFillModeWireFrame
 			);
 		}*/
-
-		DrawGridLine(Matrix4x4(Multiply(viewMatrix, projectionMatrix)), viewportMatrix);
-		DrawGridSphere(spher, Matrix4x4(Multiply(viewMatrix, projectionMatrix)), viewportMatrix, BLACK);
+		Matrix4x4 viewProjection = Multiply(viewMatrix, projectionMatrix);
+		DrawGridLine(viewProjection, viewportMatrix);
+		DrawGridSphere(spher, viewProjection, viewportMatrix, BLACK);
+		DrawAxis(spher.worldMatrix, viewProjection, viewportMatrix);
 		///------------------///
 		/// ↑描画処理ここまで
 		///------------------///

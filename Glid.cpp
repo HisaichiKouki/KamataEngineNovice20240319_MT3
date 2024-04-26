@@ -60,64 +60,108 @@ void DrawGridLine(const Matrix4x4& viewProjectionMat, const Matrix4x4& viewportM
 void DrawGridSphere(const Sphere& sphere, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color)
 {
 	float pi = 3.1415926535f;//
-	const uint32_t kSubdivision = 20;
-	const float kLonEvery = (kSubdivision / 180.0f) * pi;//緯度
-	const float kLatEvery = (kSubdivision / 180.0f) * pi;//軽度
+	const uint32_t kSubdivision = 42;
+	float kLatD = pi / kSubdivision;
+	float kLonD = (2.0f * pi) / kSubdivision;
+	//const float kLatEvery = thetaD;//緯度
+	//const float kLonEvery = faiD;//経度
 
-	float thetaD = pi / kSubdivision;
-	float faiD = 2.0f*pi / kSubdivision;
 
-		for (uint32_t latIndex = 0; latIndex < kSubdivision; latIndex++)
+	for (uint32_t latIndex = 0; latIndex < kSubdivision; latIndex++)
+	{
+		float lat = -pi / 2.0f + kLatD * latIndex;//緯度
+
+		for (uint32_t lonIndex = 0; lonIndex < kSubdivision; lonIndex++)
 		{
-			float lat = -pi / 2.0f + kLatEvery * latIndex;
+			float lon = lonIndex * kLonD;//経度
 
-			for (uint32_t lonIndex = 0; lonIndex < kSubdivision; lonIndex++)
-			{
-				float lon = lonIndex * kLonEvery;
+			Vector3 a, b, c;
+			a.x = cosf(lat) * cosf(lon);
+			a.y = sinf(lat);
+			a.z = cosf(lat) * sinf(lon);
 
-				Vector3 a, b, c;
-				a.x = cosf(lon) * cosf(lat);
-				a.y = sinf(lon);
-				a.z = cosf(lon) * sinf(lat);
+			b.x = cosf(lat + kLatD) * cosf(lon);
+			b.y = sinf(lat + kLatD);
+			b.z = cosf(lat + kLatD) * sinf(lon);
 
-				b.x = cosf(lon + thetaD) * cosf(lat);
-				b.y = sinf(lon + thetaD);
-				b.z = cosf(lon + thetaD) * sinf(lat);
+			c.x = cosf(lat) * cosf(lon + kLonD);
+			c.y = sinf(lat);
+			c.z = cosf(lat) * sinf(lon + kLonD);
 
-				c.x = cosf(lon) * cosf(lat + faiD);
-				c.y = sinf(lon);
-				c.z = cosf(lon) * sinf(lat + faiD);
+			a = Multiply(sphere.radius, a);
+			b = Multiply(sphere.radius, b);
+			c = Multiply(sphere.radius, c);
 
-				a = Multiply( sphere.radius,a);
-				b = Multiply( sphere.radius,b);
-				c = Multiply( sphere.radius,c);
 
-				Matrix4x4 aWorldMat = MakeTranslateMatrix(a);
-				Matrix4x4 bWorldMat = MakeTranslateMatrix(b);
-				Matrix4x4 cWorldMat = MakeTranslateMatrix(c);
+			Matrix4x4 worldviewProjectionMatrix = Multiply(sphere.worldMatrix, viewProjectionMatrix);
+			Vector3 aNdcVec = Transform(a, worldviewProjectionMatrix);
+			Vector3 bNdcVec = Transform(b, worldviewProjectionMatrix);
+			Vector3 cNdcVec = Transform(c, worldviewProjectionMatrix);
+			Vector3 aScreen = Transform(aNdcVec, viewportMatrix);
+			Vector3 bScreen = Transform(bNdcVec, viewportMatrix);
+			Vector3 cScreen = Transform(cNdcVec, viewportMatrix);
+			/*Matrix4x4 aWorldMat = Tra;
+			Matrix4x4 bWorldMat = MakeTranslateMatrix(b);
+			Matrix4x4 cWorldMat = MakeTranslateMatrix(c);
 
-				Matrix4x4 aWvPMat = Multiply(aWorldMat, viewProjectionMatrix);
-				Matrix4x4 bWvPMat = Multiply(bWorldMat, viewProjectionMatrix);
-				Matrix4x4 cWvPMat = Multiply(cWorldMat, viewProjectionMatrix);
-		
-				Vector3 aNdcVec = Transform({ 0.0f,0.0f,0.0f }, aWvPMat);
-				Vector3 bNdcVec = Transform({ 0.0f,0.0f,0.0f }, bWvPMat);
-				Vector3 cNdcVec = Transform({ 0.0f,0.0f,0.0f }, cWvPMat);
+			Matrix4x4 aWvPMat = Multiply(aWorldMat, viewProjectionMatrix);
+			Matrix4x4 bWvPMat = Multiply(bWorldMat, viewProjectionMatrix);
+			Matrix4x4 cWvPMat = Multiply(cWorldMat, viewProjectionMatrix);
 
-				Vector3 aScreen= Transform(aNdcVec, viewportMatrix);
-				Vector3 bScreen= Transform(bNdcVec, viewportMatrix);
-				Vector3 cScreen= Transform(cNdcVec, viewportMatrix);
+			Vector3 aNdcVec = Transform({ 0.0f,0.0f,0.0f }, aWvPMat);
+			Vector3 bNdcVec = Transform({ 0.0f,0.0f,0.0f }, bWvPMat);
+			Vector3 cNdcVec = Transform({ 0.0f,0.0f,0.0f }, cWvPMat);
 
-				Novice::DrawLine(
-					int(aScreen.x), int(aScreen.y),
-					int(bScreen.x), int(bScreen.y), color);
-				Novice::DrawLine(
-					int(aScreen.x), int(aScreen.y),
-					int(cScreen.x), int(cScreen.y), RED);
+			Vector3 aScreen= Transform(aNdcVec, viewportMatrix);
+			Vector3 bScreen= Transform(bNdcVec, viewportMatrix);
+			Vector3 cScreen= Transform(cNdcVec, viewportMatrix);*/
 
-			}
+			Novice::DrawLine(
+				int(aScreen.x), int(aScreen.y),
+				int(bScreen.x), int(bScreen.y), color);
+			Novice::DrawLine(
+				int(aScreen.x), int(aScreen.y),
+				int(cScreen.x), int(cScreen.y), RED);
 
 		}
+
+	}
 }
+
+void DrawAxis(const Matrix4x4& worldMatrix, const Matrix4x4& viewProjection, const Matrix4x4& viewportMatrix)
+{
+
+	Matrix4x4 worldviewProjectionMatrix = Multiply(worldMatrix, viewProjection);
+
+	Vector3 kLocalPos[4]{};
+	kLocalPos[0] = { 0.0f,0.0f,0.0f };//centor
+	kLocalPos[1] = { 2.0f,0.0f,0.0f };//x
+	kLocalPos[2] = { 0.0f,2.0f,0.0f };//y
+	kLocalPos[3] = { 0.0f,0.0f,2.0f };//z
+
+	uint32_t color[3]{ };
+	color[0] = RED;
+	color[1] = GREEN;
+	color[2] = BLUE;
+
+	Vector3 fromNdcVec = Transform(kLocalPos[0], worldviewProjectionMatrix);
+	Vector3 fromScreen = Transform(fromNdcVec, viewportMatrix);
+	for (int i = 1; i <= 3; i++)
+	{
+		Vector3 ndcVec= Transform(kLocalPos[i], worldviewProjectionMatrix);
+		Vector3 screen = Transform(ndcVec, viewportMatrix);
+
+		Novice::DrawLine(
+			int(fromScreen.x), int(fromScreen.y),
+			int(screen.x), int(screen.y), color[i - 1]
+		);
+	}
+
+
+
+
+}
+
+
 
 
