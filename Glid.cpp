@@ -60,7 +60,7 @@ void DrawGridLine(const Matrix4x4& viewProjectionMat, const Matrix4x4& viewportM
 void DrawGridSphere(const Sphere& sphere, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color)
 {
 	float pi = 3.1415926535f;//
-	const uint32_t kSubdivision = 42;
+	const uint32_t kSubdivision = 3;
 	float kLatD = pi / kSubdivision;
 	float kLonD = (2.0f * pi) / kSubdivision;
 	//const float kLatEvery = thetaD;//緯度
@@ -121,7 +121,7 @@ void DrawGridSphere(const Sphere& sphere, const Matrix4x4& viewProjectionMatrix,
 				int(bScreen.x), int(bScreen.y), color);
 			Novice::DrawLine(
 				int(aScreen.x), int(aScreen.y),
-				int(cScreen.x), int(cScreen.y), RED);
+				int(cScreen.x), int(cScreen.y), color);
 
 		}
 

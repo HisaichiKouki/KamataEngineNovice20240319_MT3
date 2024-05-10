@@ -1,7 +1,8 @@
 #include <Novice.h>
 #include "Vector3AndMatrix4x4.h"
 #include "Glid.h"
-
+#include "ObjectStruct.h"
+#include "ProjectFunction.h"
 #include <imgui.h>
 const char kWindowTitle[] = "LD2A_01_ヒサイチ_コウキ";
 
@@ -13,33 +14,25 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	const int kWindowHeight = 720;
 	Novice::Initialize(kWindowTitle, kWindowWidth, kWindowHeight);
 
-	/*Vector3 v1{ 1.2f,-3.9f,2.5f };
-	Vector3 v2{ 2.8f,0.4f,-1.3f };
-	Vector3 cross = Cross(v1, v2);
+	Vector3 cameraPosition = { 0.0f,1.9f,-6.49f };
 
-	Vector3 kLocalVertices[3] = {
-		{0.0f,1.0f,0.0f},
-		{1.0f,0.0f,0.0f},
-		{-1.0f,-1.0f,0.0f}
-	};
-	Vector3 kTraiangleVector[2]{
-	Subtract(kLocalVertices[0],kLocalVertices[1]),
-	Subtract(kLocalVertices[1],kLocalVertices[2])
-	};*/
-
-	//Vector3 rotate{};
-	//Vector3 translate{};
-	//float kAddRotation = 0.05f;
-	//float kAddMove = 0.2f;
-
-	Vector3 cameraPosition = { 0.0f,0.0f,-15.0f };
+	Vector3 cameraRotate{ 0.26f,0.0f,0.0f };
 	Vector3 cameraVector = { 0,0,1 };
+	cameraVector *= cameraRotate;
 
-	Vector3 cameraRotate{};
+	Segment segment{ {-2.0f,-1.0f,0.0f},{3.0f,2.0f,2.0f} };
+	Vector3 point{ -1.5f,0.6f,0.6f };
+
+	Vector3 project = Project(Subtract(point, segment.origin), segment.diff);
+	Vector3 clossestPoint = ClosestPoint(point, segment);
+
+	
 	//float twoFaces{};
 
-	Sphere spher{};
-	spher.radius = 1;
+	
+
+
+
 	// キー入力結果を受け取る箱
 	char keys[256] = { 0 };
 	char preKeys[256] = { 0 };
@@ -98,22 +91,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 		kTraiangleVector[0] = Subtract(worldVertices[0], worldVertices[1]);
 		kTraiangleVector[1] = Subtract(worldVertices[1], worldVertices[2]);*/
+
+		Sphere pointSpher{ point,0.31f };
+		Sphere closestPointSphere{ clossestPoint,0.31f };
+
 		Matrix4x4 cameraMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, cameraRotate, cameraPosition);
 		Matrix4x4 viewMatrix = Inverse(cameraMatrix);
 		Matrix4x4 projectionMatrix = MakePerspectiveFovMatrix(0.45f, float(kWindowWidth) / float(kWindowHeight), 0.1f, 100.0f);
 		Matrix4x4 viewportMatrix = MakeViewportMatrix(0, 0, float(kWindowWidth), float(kWindowHeight), 0.0f, 1.0f);
-		spher.worldMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, spher.rotate, spher.centor);
+		pointSpher.worldMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, pointSpher.rotate, pointSpher.centor);
+		closestPointSphere.worldMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, closestPointSphere.rotate, closestPointSphere.centor);
+
 		ImGui::Begin("Debug");
 		ImGui::DragFloat3("cameraPosition", &cameraPosition.x, 0.1f);
 		ImGui::DragFloat3("cameraRotate", &cameraRotate.x, 0.005f);
 		ImGui::End();
-		if (ImGui::TreeNode("spher"))
-		{
-			ImGui::DragFloat3("spherePos", &spher.centor.x, 0.1f);
-			ImGui::SliderFloat("sphereRadius", &spher.radius, 0.01f, 100.0f);
-			ImGui::DragFloat3("sphereRotate", &spher.rotate.x, 0.1f);
-			ImGui::TreePop();
-		}
+
 
 		///------------------///
 		/// ↑更新処理ここまで
@@ -122,35 +115,34 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///------------------///
 		/// ↓描画処理ここから
 		///------------------///
-
-		/*VectorScreenPrintf(0, 0, cross, "cross");
-
-		twoFaces = Dot(cameraVector, Cross(kTraiangleVector[0], kTraiangleVector[1]));
-		Novice::ScreenPrintf(0, 20, "twoFaces=%f", twoFaces);
-		Novice::ScreenPrintf(0, 40, "rotate.y=%f", rotate.y);
-		if (twoFaces <= 0)
-		{
-			Novice::DrawTriangle(
-				int(screenVertices[0].x), int(screenVertices[0].y),
-				int(screenVertices[1].x), int(screenVertices[1].y),
-				int(screenVertices[2].x), int(screenVertices[2].y),
-				RED, kFillModeSolid
-			);
-		}
-		else
-		{
-
-			Novice::DrawTriangle(
-				int(screenVertices[0].x), int(screenVertices[0].y),
-				int(screenVertices[1].x), int(screenVertices[1].y),
-				int(screenVertices[2].x), int(screenVertices[2].y),
-				RED, kFillModeWireFrame
-			);
-		}*/
 		Matrix4x4 viewProjection = Multiply(viewMatrix, projectionMatrix);
+
+		Vector3 start = Transform(Transform(segment.origin, viewProjection), viewportMatrix);
+		Vector3 end = Transform(Transform(Add(segment.origin, segment.diff), viewProjection), viewportMatrix);
+
+		
+
+		Novice::DrawLine(int(start.x), int(start.y), int(end.x), int(end.y), WHITE);
+
 		DrawGridLine(viewProjection, viewportMatrix);
-		DrawGridSphere(spher, viewProjection, viewportMatrix, BLACK);
-		DrawAxis(spher.worldMatrix, viewProjection, viewportMatrix);
+		DrawGridSphere(pointSpher, viewProjection, viewportMatrix, RED);
+		DrawGridSphere(closestPointSphere, viewProjection, viewportMatrix, BLACK);
+
+
+
+		if (ImGui::TreeNode("debug"))
+		{
+			ImGui::DragFloat3("Point", &point.x, 0.01f);
+			ImGui::DragFloat3("Segment.origin", &segment.origin.x, 0.01f);
+			ImGui::DragFloat3("Segment.diff", &segment.diff.x, 0.01f);
+			ImGui::DragFloat3("Project", &project.x, 0.01f);
+			ImGui::DragFloat3("ClosesPoint", &clossestPoint.x, 0.01f);
+			//ImGui::DragFloat3("spherePos", &spher.centor.x, 0.1f);
+			//ImGui::SliderFloat("sphereRadius", &spher.radius, 0.01f, 100.0f);
+			//ImGui::DragFloat3("sphereRotate", &spher.rotate.x, 0.1f);
+			ImGui::TreePop();
+		}
+		//DrawAxis(spher.worldMatrix, viewProjection, viewportMatrix);
 		///------------------///
 		/// ↑描画処理ここまで
 		///------------------///

@@ -50,6 +50,7 @@ float Length(const Vector3& v1, const Vector3& v2)
 	return sqrtf(result.x * result.x + result.y * result.y + result.z * result.z);
 }
 
+
 Vector3 Normalize(const Vector3& v)
 {
 	float length = Length(v);
