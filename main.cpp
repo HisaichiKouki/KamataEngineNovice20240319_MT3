@@ -75,55 +75,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		{
 			s2Color = WHITE;
 		}
-		/*if (keys[DIK_A])
-		{
-			translate.x -= kAddMove;
-		}
-		if (keys[DIK_D])
-		{
-			translate.x += kAddMove;
-		}
-		if (keys[DIK_S])
-		{
-			translate.y -= kAddMove;
-		}
-		if (keys[DIK_W])
-		{
-			translate.y += kAddMove;
-		}
-
-
-		rotate.y += kAddRotation;
-
-		if (keys[DIK_SPACE])
-		{
-			rotate.y = 0;
-		}
-		if (SpherCollision(s1,s2))
-		{
-			s2Color = RED;
-		}
-		else
-		{
-			s2Color = WHITE;
-		}
-		Matrix4x4 worldMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, rotate, translate);
-		Matrix4x4 cameraMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, cameraRotate, cameraPosition);
-		Matrix4x4 viewMatrix = Inverse(cameraMatrix);
-		Matrix4x4 projectionMatrix = MakePerspectiveFovMatrix(0.45f, float(kWindowWidth) / float(kWindowHeight), 0.1f, 100.0f);
-		Matrix4x4 worldviewProjectionMatrix = Multiply(worldMatrix, Multiply(viewMatrix, projectionMatrix));
-		Matrix4x4 viewportMatrix = MakeViewportMatrix(0, 0, float(kWindowWidth), float(kWindowHeight), 0.0f, 1.0f);
-		Vector3 screenVertices[3];
-		Vector3 worldVertices[3];
-		for (uint32_t i = 0; i < 3; i++)
-		{
-			Vector3 ndcVertex = Transform(kLocalVertices[i], worldviewProjectionMatrix);
-			worldVertices[i] = ndcVertex;
-			screenVertices[i] = Transform(ndcVertex, viewportMatrix);
-		}
-		kTraiangleVector[0] = Subtract(worldVertices[0], worldVertices[1]);
-		kTraiangleVector[1] = Subtract(worldVertices[1], worldVertices[2]);*/
-
+		
 		
 
 		Matrix4x4 cameraMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, cameraRotate, cameraPosition);
@@ -147,7 +99,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///------------------///
 		/// ↓描画処理ここから
 		///------------------///
-		Matrix4x4 viewProjection = Multiply(viewMatrix, projectionMatrix);
 
 		
 		DrawGridSphere(s1, viewProjection, viewportMatrix, WHITE);
