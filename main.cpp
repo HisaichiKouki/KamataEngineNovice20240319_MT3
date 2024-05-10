@@ -5,6 +5,8 @@
 #include "ProjectFunction.h"
 #include <imgui.h>
 #include "Collision.h"
+#include "InputManager.h"
+#include "Camera.h"
 const char kWindowTitle[] = "LD2A_01_ヒサイチ_コウキ";
 
 // Windowsアプリでのエントリーポイント(main関数)
@@ -15,21 +17,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	const int kWindowHeight = 720;
 	Novice::Initialize(kWindowTitle, kWindowWidth, kWindowHeight);
 
-	Vector3 cameraPosition = { 0.0f,1.9f,-6.49f };
+	Camera* camera = new Camera;
+	//Vector3 cameraPosition = { 0.0f,1.9f,-6.49f };
 
-	Vector3 cameraRotate{ 0.26f,0.0f,0.0f };
-	Vector3 cameraVector = { 0,0,1 };
-	cameraVector *= cameraRotate;
+	//Vector3 cameraRotate{ 0.26f,0.0f,0.0f };
+	//Vector3 cameraVector = { 0,0,1 };
+	//cameraVector *= cameraRotate;
 
 	Sphere s1{ {1,0,0},0.5f };
 	Sphere s2{ {-1,0,0},0.5f };
 	int s2Color = WHITE;
 
-
-	
-	//float twoFaces{};
-
-	
 	float kAddMove = 0.02f;
 
 
@@ -41,6 +39,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	while (Novice::ProcessMessage() == 0) {
 		// フレームの開始
 		Novice::BeginFrame();
+		InputManager::Update();
 
 		// キー入力を受け取る
 		memcpy(preKeys, keys, 256);
@@ -50,22 +49,27 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///------------------///
 
-		if (keys[DIK_A])
+
+		if (!camera->GetIsDebugMode())
 		{
-			s2.centor.x -= kAddMove;
+			if (keys[DIK_A])
+			{
+				s2.centor.x -= kAddMove;
+			}
+			if (keys[DIK_D])
+			{
+				s2.centor.x += kAddMove;
+			}
+			if (keys[DIK_S])
+			{
+				s2.centor.y -= kAddMove;
+			}
+			if (keys[DIK_W])
+			{
+				s2.centor.y += kAddMove;
+			}
 		}
-		if (keys[DIK_D])
-		{
-			s2.centor.x += kAddMove;
-		}
-		if (keys[DIK_S])
-		{
-			s2.centor.y -= kAddMove;
-		}
-		if (keys[DIK_W])
-		{
-			s2.centor.y += kAddMove;
-		}
+		
 
 		if (SpherCollision(s1, s2))
 		{
@@ -78,18 +82,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		
 		
 
-		Matrix4x4 cameraMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, cameraRotate, cameraPosition);
+		/*Matrix4x4 cameraMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, cameraRotate, cameraPosition);
 		Matrix4x4 viewMatrix = Inverse(cameraMatrix);
 		Matrix4x4 projectionMatrix = MakePerspectiveFovMatrix(0.45f, float(kWindowWidth) / float(kWindowHeight), 0.1f, 100.0f);
-		Matrix4x4 viewportMatrix = MakeViewportMatrix(0, 0, float(kWindowWidth), float(kWindowHeight), 0.0f, 1.0f);
+		Matrix4x4 viewportMatrix = MakeViewportMatrix(0, 0, float(kWindowWidth), float(kWindowHeight), 0.0f, 1.0f);*/
+
+		camera->Update();
 
 		s1.worldMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, s1.rotate, s1.centor);
 		s2.worldMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, s2.rotate, s2.centor);
 
-		ImGui::Begin("Debug");
+		/*ImGui::Begin("Debug");
 		ImGui::DragFloat3("cameraPosition", &cameraPosition.x, 0.1f);
 		ImGui::DragFloat3("cameraRotate", &cameraRotate.x, 0.005f);
-		ImGui::End();
+		ImGui::End();*/
 
 
 		///------------------///
@@ -101,17 +107,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///------------------///
 
 		
-		DrawGridSphere(s1, viewProjection, viewportMatrix, WHITE);
+		DrawGridSphere(s1, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
 		
-		DrawGridSphere(s2, viewProjection, viewportMatrix, s2Color);
+		DrawGridSphere(s2, camera->GetviewProjection(), camera->GetViewportMatrix(), s2Color);
 
-		DrawGridLine(viewProjection, viewportMatrix);
+		DrawGridLine(camera->GetviewProjection(), camera->GetViewportMatrix());
 
 		ImGui::Begin("Spher");
 		ImGui::DragFloat("spher1Radius", &s1.radius, 0.01f);
 		ImGui::DragFloat("spher2Radius", &s2.radius, 0.01f);
 		ImGui::End();
-
+		
+		camera->DebugDraw();
 		//if (ImGui::TreeNode("debug"))
 		//{
 		//	/*ImGui::DragFloat3("Point", &point.x, 0.01f);
@@ -139,6 +146,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 	}
 
+	delete camera;
 	// ライブラリの終了
 	Novice::Finalize();
 	return 0;
