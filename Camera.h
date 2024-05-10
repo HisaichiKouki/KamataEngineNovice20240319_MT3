@@ -22,12 +22,14 @@ private:
 
 	const int kWindowWidth = 1280;
 	const int kWindowHeight = 720;
-	const float kMoveSpeed = 0.02f;
-	const float kBoostMoveSpeed = 2.0f;
+	const float kMoveSpeed = 0.03f;
+	const float kBoostMoveSpeed = 2.5f;
 	const float kRotateSpeed = 0.006f;
+	const float kMouceRotateSpeed = 0.001f;
 
 	float isRotateSpeed_;
 	float isMoveSpeed_;
+	float isMouceRotateSpeed_;
 
 	bool isDebugMode_;
 	bool isFPSMode_;
@@ -36,8 +38,10 @@ private:
 	int my_;
 	int preMx_;
 	int preMy_;
+	float smoothMx_;
+	float smoothMy_;
+	float easeT = 0.1f;
 
-	float mouceRotateSpeed = 0.001f;
 	
 
 	Vector3 cameraMoveVector_;

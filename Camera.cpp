@@ -19,7 +19,9 @@ void Camera::Init()
 	isMoveSpeed_ = 1.0f;
 	cameraRay_ = TransformNomal({ 0,0,1 }, cameraMatrix);
 	isFPSMode_ = true;
-
+	smoothMx_=0;
+	smoothMy_=0;
+	isMouceRotateSpeed_ = kMouceRotateSpeed;
 }
 
 void Camera::Update()
@@ -56,16 +58,27 @@ void Camera::Move()
 		preMy_ = my_;
 		Novice::GetMousePosition(&mx_, &my_);
 
+		if (Novice::IsTriggerMouse(0)|| Novice::IsTriggerMouse(1) )
+		{
+			smoothMx_ = 0;
+			smoothMy_ = 0;
+		}
 		if (Novice::IsPressMouse(0))
 		{
-			cameraRotate_.y += (mx_ - preMx_) * mouceRotateSpeed;
-			cameraRotate_.x += (my_ - preMy_) * mouceRotateSpeed;
+			isMouceRotateSpeed_ = kMouceRotateSpeed;			
 		}
-		if (Novice::IsPressMouse(1))
+		else if (Novice::IsPressMouse(1))
 		{
-			cameraRotate_.y += (mx_ - preMx_) * mouceRotateSpeed*2;
-			cameraRotate_.x += (my_ - preMy_) * mouceRotateSpeed*2;
+			isMouceRotateSpeed_ = kMouceRotateSpeed*2.5f;			
 		}
+		else
+		{		
+			isMouceRotateSpeed_ = 0;
+		}
+		smoothMx_ = (1.0f - easeT) * smoothMx_ + float(mx_ - preMx_) * easeT;
+		smoothMy_ = (1.0f - easeT) * smoothMy_ + float(my_ - preMy_) * easeT;
+		cameraRotate_.y += smoothMx_ * isMouceRotateSpeed_;
+		cameraRotate_.x += smoothMy_ * isMouceRotateSpeed_;
 		cameraMoveVector_ = { 0,0,0 };
 
 		if (InputManager::GetIsPressKey(DIK_LSHIFT))

@@ -60,14 +60,30 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			{
 				s2.centor.x += kAddMove;
 			}
-			if (keys[DIK_S])
+			if (keys[DIK_LSHIFT])
 			{
-				s2.centor.y -= kAddMove;
+				if (keys[DIK_S])
+				{
+					s2.centor.y -= kAddMove;
+				}
+				if (keys[DIK_W])
+				{
+					s2.centor.y += kAddMove;
+				}
 			}
-			if (keys[DIK_W])
+			else
 			{
-				s2.centor.y += kAddMove;
+				if (keys[DIK_S])
+				{
+					s2.centor.z -= kAddMove;
+				}
+				if (keys[DIK_W])
+				{
+					s2.centor.z += kAddMove;
+				}
+				
 			}
+			
 		}
 		
 
