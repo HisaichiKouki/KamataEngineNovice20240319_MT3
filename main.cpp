@@ -129,9 +129,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		DrawGridLine(camera->GetviewProjection(), camera->GetViewportMatrix());
 
-		ImGui::Begin("Spher");
-		ImGui::DragFloat("spher1Radius", &s1.radius, 0.01f);
-		ImGui::DragFloat("spher2Radius", &s2.radius, 0.01f);
+		ImGui::Begin("Sphere");
+		ImGui::DragFloat("sphere1Radius", &s1.radius, 0.01f);
+		ImGui::DragFloat3("sphere1Position", &s1.centor.x, 0.01f);
+		ImGui::DragFloat("sphere2Radius", &s2.radius, 0.01f);
+		ImGui::DragFloat3("sphere2Position", &s2.centor.x, 0.01f);
+
 		ImGui::End();
 		
 		camera->DebugDraw();

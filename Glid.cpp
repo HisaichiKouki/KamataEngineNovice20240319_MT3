@@ -60,7 +60,7 @@ void DrawGridLine(const Matrix4x4& viewProjectionMat, const Matrix4x4& viewportM
 void DrawGridSphere(const Sphere& sphere, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color)
 {
 	float pi = 3.1415926535f;//
-	const uint32_t kSubdivision = 8;
+	const uint32_t kSubdivision = 12;
 	float kLatD = pi / kSubdivision;
 	float kLonD = (2.0f * pi) / kSubdivision;
 	//const float kLatEvery = thetaD;//緯度

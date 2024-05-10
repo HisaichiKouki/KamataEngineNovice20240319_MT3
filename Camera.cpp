@@ -181,11 +181,14 @@ void Camera::Move()
 void Camera::DebugDraw()
 {
 
+	Novice::DrawBox(1000, 700, 170, 20, 0, 0x4444ffff,kFillModeSolid);
 	Novice::ScreenPrintf(1000, 700, "CameraDebugMode -T-");
 	if (!isDebugMode_)
 	{
 		return;
 	}
+	Novice::DrawBox(1000, 700, 170, 20, 0, 0xff4444ff, kFillModeSolid);
+
 	cameraRay_ = TransformNomal({0,0,1}, cameraMatrix);
 	ImGui::Begin("Debug");
 	ImGui::DragFloat3("cameraPosition", &cameraPosition_.x, 0.1f);
