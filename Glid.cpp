@@ -148,7 +148,7 @@ void DrawAxis(const Matrix4x4& worldMatrix, const Matrix4x4& viewProjection, con
 	Vector3 fromScreen = Transform(fromNdcVec, viewportMatrix);
 	for (int i = 1; i <= 3; i++)
 	{
-		Vector3 ndcVec= Transform(kLocalPos[i], worldviewProjectionMatrix);
+		Vector3 ndcVec = Transform(kLocalPos[i], worldviewProjectionMatrix);
 		Vector3 screen = Transform(ndcVec, viewportMatrix);
 
 		Novice::DrawLine(
@@ -156,9 +156,37 @@ void DrawAxis(const Matrix4x4& worldMatrix, const Matrix4x4& viewProjection, con
 			int(screen.x), int(screen.y), color[i - 1]
 		);
 	}
+}
 
+void DrawPlane(const Plane& plane, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color)
+{
+	Vector3 center = Multiply(plane.distance, plane.normal);
+	Vector3 perpendiculars[4];
+	perpendiculars[0] = Normalize(Perpendicular(plane.normal));
+	perpendiculars[1] = { perpendiculars[0] * -1 };
+	perpendiculars[2] = Cross(plane.normal, perpendiculars[0]);
+	perpendiculars[3] = perpendiculars[2] * -1;
 
+	Vector3 points[4];
+	for (int32_t index = 0; index < 4; index++)
+	{
+		Vector3 extend = Multiply(2.0f, perpendiculars[index]);
+		Vector3 point = Add(center, extend);
+		points[index] = Transform(Transform(point, viewProjectionMatrix), viewportMatrix);
 
+	}
+	Vector3 normalVector = Add(center, plane.normal);
+	center = Transform(Transform(center, viewProjectionMatrix), viewportMatrix);
+	normalVector = Transform(Transform(normalVector, viewProjectionMatrix), viewportMatrix);
+	Novice::DrawLine(int(points[0].x), int(points[0].y), int(points[2].x), int(points[2].y), RED);
+	Novice::DrawLine(int(points[1].x), int(points[1].y), int(points[3].x), int(points[3].y), BLUE);
+	Novice::DrawLine(int(points[2].x), int(points[2].y), int(points[1].x), int(points[1].y), BLACK);
+	Novice::DrawLine(int(points[3].x), int(points[3].y), int(points[0].x), int(points[0].y), color);
+
+	//デバッグ用法線を表示してるつもり(多分上手くいってない)
+	//Novice::DrawLine(int(center.x), int(center.y), int(normalVector.x), int(normalVector.y), RED);
+
+	Novice::DrawEllipse(int(center.x), int(center.y), 5, 5, 0, RED, kFillModeSolid);
 
 }
 

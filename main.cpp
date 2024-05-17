@@ -24,11 +24,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//Vector3 cameraVector = { 0,0,1 };
 	//cameraVector *= cameraRotate;
 
-	Sphere s1{ {1,0,0},0.5f };
-	Sphere s2{ {-1,0,0},0.5f };
-	int s2Color = WHITE;
+	Sphere s1{ {0,0,0},0.5f };
+	//Sphere s2{ {-1,0,0},0.5f };
+	//int s2Color = WHITE;
 
-	float kAddMove = 0.02f;
+	//float kAddMove = 0.02f;
+
+	Plane plane{ {0,1,0},1 };
 
 
 	// キー入力結果を受け取る箱
@@ -50,7 +52,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///------------------///
 
 
-		if (!camera->GetIsDebugMode())
+		/*if (!camera->GetIsDebugMode())
 		{
 			if (keys[DIK_A])
 			{
@@ -94,7 +96,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		else
 		{
 			s2Color = WHITE;
-		}
+		}*/
 		
 		
 
@@ -106,7 +108,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		camera->Update();
 
 		s1.worldMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, s1.rotate, s1.centor);
-		s2.worldMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, s2.rotate, s2.centor);
+		//s2.worldMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, s2.rotate, s2.centor);
 
 		/*ImGui::Begin("Debug");
 		ImGui::DragFloat3("cameraPosition", &cameraPosition.x, 0.1f);
@@ -121,21 +123,44 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///------------------///
 		/// ↓描画処理ここから
 		///------------------///
-
-		
-		DrawGridSphere(s1, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
-		
-		DrawGridSphere(s2, camera->GetviewProjection(), camera->GetViewportMatrix(), s2Color);
-
 		DrawGridLine(camera->GetviewProjection(), camera->GetViewportMatrix());
+
+		
+		if (Speher2PlaneCollision(s1,plane))
+		{
+			DrawGridSphere(s1, camera->GetviewProjection(), camera->GetViewportMatrix(), RED);
+
+		}
+		else 
+		{
+			DrawGridSphere(s1, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
+
+		}
+		
+		//DrawGridSphere(s2, camera->GetviewProjection(), camera->GetViewportMatrix(), s2Color);
+		DrawPlane(plane, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
+
+
 
 		ImGui::Begin("Sphere");
 		ImGui::DragFloat("sphere1Radius", &s1.radius, 0.01f);
 		ImGui::DragFloat3("sphere1Position", &s1.centor.x, 0.01f);
-		ImGui::DragFloat("sphere2Radius", &s2.radius, 0.01f);
-		ImGui::DragFloat3("sphere2Position", &s2.centor.x, 0.01f);
+		/*ImGui::DragFloat("sphere2Radius", &s2.radius, 0.01f);
+		ImGui::DragFloat3("sphere2Position", &s2.centor.x, 0.01f);*/
+		
+		if (ImGui::TreeNode("Plane"))
+		{
+			ImGui::DragFloat3("plane.Normal", &plane.normal.x, 0.01f);
+			ImGui::DragFloat("Plane.distance", &plane.distance, 0.01f);
 
+			ImGui::TreePop();
+		}
+		
 		ImGui::End();
+
+		plane.normal = Normalize(plane.normal);
+		
+
 		
 		camera->DebugDraw();
 		//if (ImGui::TreeNode("debug"))

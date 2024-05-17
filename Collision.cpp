@@ -9,3 +9,15 @@ bool SpherCollision(const Sphere& s1, const Sphere& s2)
 	}
     return false;
 }
+
+bool Speher2PlaneCollision(const Sphere& s1, const Plane& p1)
+{
+	float k = Dot(p1.normal, s1.centor) - p1.distance;
+	k = fabsf(k);
+
+	if (k<=s1.radius)
+	{
+		return true;
+	}
+	return false;
+}
