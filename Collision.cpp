@@ -21,3 +21,21 @@ bool Speher2PlaneCollision(const Sphere& s1, const Plane& p1)
 	}
 	return false;
 }
+
+bool Segment2PlaneCollision(const Segment& s1, const Plane& p1)
+{
+	float dot = Dot(p1.normal, s1.diff);
+	//float length = Length(s1.origin, s1.diff);
+	if (dot == 0) {
+		return false;
+	}
+
+	float t = (p1.distance - Dot(s1.origin, p1.normal)) / dot;
+	Novice::ScreenPrintf(0, 0, "t=%f", t);
+	if (t>=0&&t<= 1.0f)
+	{
+		return true;
+
+	}
+	return false;
+}

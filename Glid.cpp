@@ -190,6 +190,18 @@ void DrawPlane(const Plane& plane, const Matrix4x4& viewProjectionMatrix, const 
 
 }
 
+void DrawSegment(const Segment& segment, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color)
+{
+	Segment screenSeg{};
+	screenSeg.origin = Transform(Transform(segment.origin, viewProjectionMatrix), viewportMatrix);
+	screenSeg.diff = Add(segment.diff,segment.origin );
+	screenSeg.diff = Transform(Transform(screenSeg.diff, viewProjectionMatrix), viewportMatrix);
+
+	Novice::DrawLine(int(screenSeg.origin.x), int(screenSeg.origin.y), int(screenSeg.diff.x), int(screenSeg.diff.y), color);
+	Novice::DrawEllipse(int(screenSeg.origin.x), int(screenSeg.origin.y), 5, 5, 0, RED, kFillModeSolid);
+
+}
+
 
 
 

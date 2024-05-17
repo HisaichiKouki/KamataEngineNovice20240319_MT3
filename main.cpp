@@ -24,14 +24,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//Vector3 cameraVector = { 0,0,1 };
 	//cameraVector *= cameraRotate;
 
-	Sphere s1{ {0,0,0},0.5f };
+	//Sphere s1{ {0,0,0},0.5f };
 	//Sphere s2{ {-1,0,0},0.5f };
 	//int s2Color = WHITE;
 
 	//float kAddMove = 0.02f;
 
 	Plane plane{ {0,1,0},1 };
-
+	Segment seg{ {0,0,0},{0.5f,0.5f,0.5f} };
 
 	// キー入力結果を受け取る箱
 	char keys[256] = { 0 };
@@ -83,11 +83,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				{
 					s2.centor.z += kAddMove;
 				}
-				
+
 			}
-			
+
 		}
-		
+
 
 		if (SpherCollision(s1, s2))
 		{
@@ -97,8 +97,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		{
 			s2Color = WHITE;
 		}*/
-		
-		
+
+
 
 		/*Matrix4x4 cameraMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, cameraRotate, cameraPosition);
 		Matrix4x4 viewMatrix = Inverse(cameraMatrix);
@@ -107,7 +107,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		camera->Update();
 
-		s1.worldMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, s1.rotate, s1.centor);
+		//s1.worldMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, s1.rotate, s1.centor);
 		//s2.worldMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, s2.rotate, s2.centor);
 
 		/*ImGui::Begin("Debug");
@@ -125,29 +125,38 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///------------------///
 		DrawGridLine(camera->GetviewProjection(), camera->GetViewportMatrix());
 
-		
-		if (Speher2PlaneCollision(s1,plane))
+
+		/*if (Speher2PlaneCollision(s1,plane))
 		{
 			DrawGridSphere(s1, camera->GetviewProjection(), camera->GetViewportMatrix(), RED);
 
 		}
-		else 
+		else
 		{
 			DrawGridSphere(s1, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
 
-		}
-		
+		}*/
+
 		//DrawGridSphere(s2, camera->GetviewProjection(), camera->GetViewportMatrix(), s2Color);
 		DrawPlane(plane, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
 
+		if (Segment2PlaneCollision(seg, plane))
+		{
+			DrawSegment(seg, camera->GetviewProjection(), camera->GetViewportMatrix(), RED);
 
+		}
+		else
+		{
+			DrawSegment(seg, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
 
-		ImGui::Begin("Sphere");
-		ImGui::DragFloat("sphere1Radius", &s1.radius, 0.01f);
-		ImGui::DragFloat3("sphere1Position", &s1.centor.x, 0.01f);
+		}
+
+		//ImGui::Begin("Debug");
+		//ImGui::DragFloat("sphere1Radius", &s1.radius, 0.01f);
+		//ImGui::DragFloat3("sphere1Position", &s1.centor.x, 0.01f);
 		/*ImGui::DragFloat("sphere2Radius", &s2.radius, 0.01f);
 		ImGui::DragFloat3("sphere2Position", &s2.centor.x, 0.01f);*/
-		
+
 		if (ImGui::TreeNode("Plane"))
 		{
 			ImGui::DragFloat3("plane.Normal", &plane.normal.x, 0.01f);
@@ -155,13 +164,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			ImGui::TreePop();
 		}
-		
-		ImGui::End();
+		if (ImGui::TreeNode("Segment"))
+		{
+			ImGui::DragFloat3("segment.origin", &seg.origin.x, 0.01f);
+			ImGui::DragFloat3("segment.diff", &seg.diff.x, 0.01f);
+
+			ImGui::TreePop();
+		}
+		//ImGui::End();
 
 		plane.normal = Normalize(plane.normal);
-		
 
-		
+
+
 		camera->DebugDraw();
 		//if (ImGui::TreeNode("debug"))
 		//{
@@ -175,7 +190,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//	//ImGui::DragFloat3("sphereRotate", &spher.rotate.x, 0.1f);
 		//	ImGui::TreePop();
 		//}
-		
+
 		//DrawAxis(spher.worldMatrix, viewProjection, viewportMatrix);
 		///------------------///
 		/// ↑描画処理ここまで

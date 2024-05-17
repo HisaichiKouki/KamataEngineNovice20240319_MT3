@@ -9,3 +9,5 @@ void DrawGridSphere(const Sphere& sphere, const Matrix4x4& viewProjectionMatrix,
 void DrawAxis(const Matrix4x4& worldMatrix,const Matrix4x4& viewProjection, const Matrix4x4& viewportMatrix);
 
 void DrawPlane(const Plane& plane, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
+
+void DrawSegment(const Segment& segment, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
