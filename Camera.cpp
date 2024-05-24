@@ -75,10 +75,12 @@ void Camera::Move()
 		{		
 			isMouceRotateSpeed_ = 0;
 		}
-		smoothMx_ = (1.0f - easeT) * smoothMx_ + float(mx_ - preMx_) * easeT;
+		/*smoothMx_ = (1.0f - easeT) * smoothMx_ + float(mx_ - preMx_) * easeT;
 		smoothMy_ = (1.0f - easeT) * smoothMy_ + float(my_ - preMy_) * easeT;
 		cameraRotate_.y += smoothMx_ * isMouceRotateSpeed_;
-		cameraRotate_.x += smoothMy_ * isMouceRotateSpeed_;
+		cameraRotate_.x += smoothMy_ * isMouceRotateSpeed_;*/
+		cameraRotate_.y += float(mx_ - preMx_) * isMouceRotateSpeed_;
+		cameraRotate_.x += float(my_ - preMy_) * isMouceRotateSpeed_;
 		cameraMoveVector_ = { 0,0,0 };
 
 		if (InputManager::GetIsPressKey(DIK_LSHIFT))

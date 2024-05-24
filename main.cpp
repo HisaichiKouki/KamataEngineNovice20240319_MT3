@@ -32,7 +32,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	Plane plane{ {0,1,0},1 };
 	Segment seg{ {0,0,0},{0.5f,0.5f,0.5f} };
-
+	Triangle triangle{};
+	triangle.vertices[0] = { -1,0,0 };
+	triangle.vertices[1] = { 0,1,0 };
+	triangle.vertices[2] = { 1,0,0 };
 	// キー入力結果を受け取る箱
 	char keys[256] = { 0 };
 	char preKeys[256] = { 0 };
@@ -138,9 +141,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}*/
 
 		//DrawGridSphere(s2, camera->GetviewProjection(), camera->GetViewportMatrix(), s2Color);
-		DrawPlane(plane, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
+		//DrawPlane(plane, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
 
-		if (Segment2PlaneCollision(seg, plane))
+		if (Triangle2SegmentCollision(triangle,seg))
 		{
 			DrawSegment(seg, camera->GetviewProjection(), camera->GetViewportMatrix(), RED);
 
@@ -151,16 +154,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		}
 
+		DrawTriangle(triangle, camera->GetviewProjection(), camera->GetViewportMatrix(),WHITE);
 		//ImGui::Begin("Debug");
 		//ImGui::DragFloat("sphere1Radius", &s1.radius, 0.01f);
 		//ImGui::DragFloat3("sphere1Position", &s1.centor.x, 0.01f);
 		/*ImGui::DragFloat("sphere2Radius", &s2.radius, 0.01f);
 		ImGui::DragFloat3("sphere2Position", &s2.centor.x, 0.01f);*/
 
-		if (ImGui::TreeNode("Plane"))
+		if (ImGui::TreeNode("Triangle"))
 		{
-			ImGui::DragFloat3("plane.Normal", &plane.normal.x, 0.01f);
-			ImGui::DragFloat("Plane.distance", &plane.distance, 0.01f);
+			
+			ImGui::DragFloat3("Triangle.vertex[0]", &triangle.vertices[0].x, 0.01f);
+			ImGui::DragFloat3("Triangle.vertex[1]", &triangle.vertices[1].x, 0.01f);
+			ImGui::DragFloat3("Triangle.vertex[2]", &triangle.vertices[2].x, 0.01f);
 
 			ImGui::TreePop();
 		}

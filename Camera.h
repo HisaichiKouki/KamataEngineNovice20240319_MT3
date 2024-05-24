@@ -40,7 +40,7 @@ private:
 	int preMy_;
 	float smoothMx_;
 	float smoothMy_;
-	float easeT = 0.1f;
+	float easeT =1.0f;
 
 	
 

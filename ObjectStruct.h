@@ -33,11 +33,9 @@ struct Plane
 	Vector3 normal;
 	float distance;
 };
-struct Surface
+struct Triangle
 {
-	Vector3 centor;
-	Vector2 size;
-	Vector3 rotate;
-	Matrix4x4 worldMatrix;
+	
+	Vector3 vertices[3];
 
 };

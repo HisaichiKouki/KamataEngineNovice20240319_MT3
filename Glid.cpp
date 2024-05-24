@@ -202,6 +202,47 @@ void DrawSegment(const Segment& segment, const Matrix4x4& viewProjectionMatrix, 
 
 }
 
+void DrawTriangle(const Triangle& triangle, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color)
+{
+	Vector3 screenVertex[3];
+
+	for (int i = 0; i < 3; i++)
+	{
+		screenVertex[i] = Transform(Transform(triangle.vertices[i], viewProjectionMatrix), viewportMatrix);
+	}
+	
+	for (int i = 0; i < 3; i++)
+	{
+		if (i==2)
+		{
+			Novice::DrawLine(int(screenVertex[i].x), int(screenVertex[i].y), int(screenVertex[0].x), int(screenVertex[0].y), color);
+		}
+		else
+		{
+			Novice::DrawLine(int(screenVertex[i].x), int(screenVertex[i].y), int(screenVertex[i+1].x), int(screenVertex[i+1].y), color);
+
+		}
+	}
+
+	Vector3 p1p2 = Subtract(triangle.vertices[1], triangle.vertices[0]);
+	Vector3 p2p3 = Subtract(triangle.vertices[2], triangle.vertices[1]);
+	Plane plane;
+	plane.normal = Cross(p1p2, p2p3);
+	plane.normal = Normalize(plane.normal);
+	plane.distance = Dot(plane.normal,triangle.vertices[0]);
+
+	Vector3 triangleCenter = Add(Add(triangle.vertices[0], triangle.vertices[1]), triangle.vertices[2]);
+
+	triangleCenter /= 3;
+	
+	//VectorScreenPrintf(0, 20, triangleCenter, "triangleCenter");
+
+	triangleCenter = Transform(Transform(triangleCenter, viewProjectionMatrix), viewportMatrix);
+	Novice::DrawEllipse(int(triangleCenter.x), int(triangleCenter.y), 5, 5, 0, RED, kFillModeSolid);
+
+	//DrawPlane(plane, viewProjectionMatrix, viewportMatrix, color);
+}
+
 
 
 
