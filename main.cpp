@@ -192,8 +192,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		if (ImGui::TreeNode("aabb2"))
 		{
 
-			ImGui::DragFloat3("aabb2.min", &aabb1.min.x, 0.01f);
-			ImGui::DragFloat3("aabb2.max", &aabb1.max.x, 0.01f);
+			ImGui::DragFloat3("aabb2.min", &aabb2.min.x, 0.01f);
+			ImGui::DragFloat3("aabb2.max", &aabb2.max.x, 0.01f);
 
 
 			ImGui::TreePop();
