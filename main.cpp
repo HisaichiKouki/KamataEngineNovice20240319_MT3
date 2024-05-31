@@ -21,9 +21,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Camera* camera = new Camera;
 	AABB aabb1{
 		.min{-0.5f,-0.5f,-0.5f},
-		.max{0.0f,0.0f,0.0f}
+		.max{0.5f,0.5f,0.5f}
 	};
-	Sphere sphere{{1.0f,1.0f,1.0f},0.5f};
+	Segment seg = {
+		.origin{-0.7f,0.3f,0.0f},
+		.diff{2.0f,-0.5f,0.0f}
+	};
 
 	//Vector3 cameraPosition = { 0.0f,1.9f,-6.49f };
 
@@ -138,8 +141,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		DrawGridLine(camera->GetviewProjection(), camera->GetViewportMatrix());
 
 
-		DrawGridSphere(sphere, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
-		if (AABB2SphereCollision(aabb1, sphere))
+		DrawSegment(seg, camera->GetviewProjection(), camera->GetViewportMatrix(),WHITE);
+		if (AABB2Segment(aabb1,seg))
 		{
 			DrawAABB(aabb1, camera->GetviewProjection(), camera->GetViewportMatrix(), RED);
 
@@ -187,11 +190,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			ImGui::TreePop();
 		}
-		if (ImGui::TreeNode("sphere"))
+		if (ImGui::TreeNode("segment"))
 		{
 
-			ImGui::DragFloat3("sphere.centor", &sphere.centor.x, 0.01f);
-			ImGui::DragFloat("sphere.radius", &sphere.radius, 0.01f);
+			ImGui::DragFloat3("seg.origin", &seg.origin.x, 0.01f);
+			ImGui::DragFloat3("seg.diff", &seg.diff.x, 0.01f);
 
 
 			ImGui::TreePop();

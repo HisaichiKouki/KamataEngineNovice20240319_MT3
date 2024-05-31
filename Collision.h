@@ -14,3 +14,5 @@ bool Triangle2SegmentCollision(const Triangle& triangle, const Segment& segment)
 bool AABB2AABBCollision(const AABB& aabb1, const AABB& aabb2);
 
 bool AABB2SphereCollision(const AABB& aabb, const Sphere& sphere);
+
+bool AABB2Segment(const AABB& aabb, const Segment& seg);
