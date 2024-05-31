@@ -23,10 +23,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		.min{-0.5f,-0.5f,-0.5f},
 		.max{0.0f,0.0f,0.0f}
 	};
-	AABB aabb2{
-		.min{0.2f,0.2f,0.2f},
-		.max{1.0f,1.0f,1.0f}
-	};
+	Sphere sphere{{1.0f,1.0f,1.0f},0.5f};
 
 	//Vector3 cameraPosition = { 0.0f,1.9f,-6.49f };
 
@@ -66,7 +63,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 		ReAABB(aabb1);
-		ReAABB(aabb2);
+
 		/*if (!camera->GetIsDebugMode())
 		{
 			if (keys[DIK_A])
@@ -140,20 +137,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///------------------///
 		DrawGridLine(camera->GetviewProjection(), camera->GetViewportMatrix());
 
-		DrawAABB(aabb1, camera->GetviewProjection(), camera->GetViewportMatrix(),WHITE);
-		if (AABB2AABBCollision(aabb1,aabb2))
+
+		DrawGridSphere(sphere, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
+		if (AABB2SphereCollision(aabb1, sphere))
 		{
-			DrawAABB(aabb2, camera->GetviewProjection(), camera->GetViewportMatrix(), RED);
+			DrawAABB(aabb1, camera->GetviewProjection(), camera->GetViewportMatrix(), RED);
 
 		}
 		else
 		{
-			DrawAABB(aabb2, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
+			DrawAABB(aabb1, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
 
 		}
 
 
-		
+
 		/*if (Speher2PlaneCollision(s1,plane))
 		{
 			DrawGridSphere(s1, camera->GetviewProjection(), camera->GetViewportMatrix(), RED);
@@ -189,11 +187,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			ImGui::TreePop();
 		}
-		if (ImGui::TreeNode("aabb2"))
+		if (ImGui::TreeNode("sphere"))
 		{
 
-			ImGui::DragFloat3("aabb2.min", &aabb2.min.x, 0.01f);
-			ImGui::DragFloat3("aabb2.max", &aabb2.max.x, 0.01f);
+			ImGui::DragFloat3("sphere.centor", &sphere.centor.x, 0.01f);
+			ImGui::DragFloat("sphere.radius", &sphere.radius, 0.01f);
 
 
 			ImGui::TreePop();

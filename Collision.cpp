@@ -82,3 +82,18 @@ bool AABB2AABBCollision(const AABB& aabb1, const AABB& aabb2)
 	}
 	return false;
 }
+
+bool AABB2SphereCollision(const AABB& aabb, const Sphere& sphere)
+{
+	Vector3 colossetPoint;
+	colossetPoint.x = std::clamp(sphere.centor.x, aabb.min.x, aabb.max.x);
+	colossetPoint.y = std::clamp(sphere.centor.y, aabb.min.y, aabb.max.y);
+	colossetPoint.z = std::clamp(sphere.centor.z, aabb.min.z, aabb.max.z);
+
+	float distance = Length(colossetPoint - sphere.centor);
+	if (distance<=sphere.radius)
+	{
+		return true;
+	}
+	return false;
+}

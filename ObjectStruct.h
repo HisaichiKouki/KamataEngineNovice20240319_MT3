@@ -5,8 +5,8 @@ struct Sphere
 {
 	Vector3 centor;
 	float radius;
-	Vector3 rotate;
-	Matrix4x4 worldMatrix;
+	//Vector3 rotate;
+	//Matrix4x4 worldMatrix;
 
 };
 

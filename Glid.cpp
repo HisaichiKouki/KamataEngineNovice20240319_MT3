@@ -65,7 +65,7 @@ void DrawGridSphere(const Sphere& sphere, const Matrix4x4& viewProjectionMatrix,
 	float kLonD = (2.0f * pi) / kSubdivision;
 	//const float kLatEvery = thetaD;//緯度
 	//const float kLonEvery = faiD;//経度
-
+	//sphere.worldMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, sphere.rotate, sphere.centor);
 
 	for (uint32_t latIndex = 0; latIndex < kSubdivision; latIndex++)
 	{
@@ -88,18 +88,18 @@ void DrawGridSphere(const Sphere& sphere, const Matrix4x4& viewProjectionMatrix,
 			c.y = sinf(lat);
 			c.z = cosf(lat) * sinf(lon + kLonD);
 
-			a = Multiply(sphere.radius, a);
-			b = Multiply(sphere.radius, b);
-			c = Multiply(sphere.radius, c);
+			a = Multiply(sphere.radius, a) + sphere.centor;
+			b = Multiply(sphere.radius, b) + sphere.centor;
+			c = Multiply(sphere.radius, c) + sphere.centor;
 
 
-			Matrix4x4 worldviewProjectionMatrix = Multiply(sphere.worldMatrix, viewProjectionMatrix);
-			Vector3 aNdcVec = Transform(a, worldviewProjectionMatrix);
-			Vector3 bNdcVec = Transform(b, worldviewProjectionMatrix);
-			Vector3 cNdcVec = Transform(c, worldviewProjectionMatrix);
-			Vector3 aScreen = Transform(aNdcVec, viewportMatrix);
-			Vector3 bScreen = Transform(bNdcVec, viewportMatrix);
-			Vector3 cScreen = Transform(cNdcVec, viewportMatrix);
+			//Matrix4x4 worldviewProjectionMatrix = Multiply(sphere.worldMatrix, viewProjectionMatrix);
+			//Vector3 aNdcVec = Transform(Transform(a,viewProjectionMatrix),viewportMatrix);
+			//Vector3 bNdcVec = Transform(Transform(a, viewProjectionMatrix), viewportMatrix);
+			//Vector3 cNdcVec = Transform(Transform(a, viewProjectionMatrix), viewportMatrix);
+			Vector3 aScreen = Transform(Transform(a, viewProjectionMatrix), viewportMatrix);
+			Vector3 bScreen = Transform(Transform(b, viewProjectionMatrix), viewportMatrix);
+			Vector3 cScreen = Transform(Transform(c, viewProjectionMatrix), viewportMatrix);
 			/*Matrix4x4 aWorldMat = Tra;
 			Matrix4x4 bWorldMat = MakeTranslateMatrix(b);
 			Matrix4x4 cWorldMat = MakeTranslateMatrix(c);
@@ -252,16 +252,16 @@ void DrawAABB(const AABB& aabb, const Matrix4x4& viewProjectionMatrix, const Mat
 	point[2] = { aabb.min.x,aabb.max.y,aabb.min.z };//左上手前
 	point[3] = { aabb.max.x ,aabb.max.y ,aabb.min.z };//右上手前
 
-	point[4] = { aabb.min.x,aabb.min.y,aabb.max.z  };//左下奥
+	point[4] = { aabb.min.x,aabb.min.y,aabb.max.z };//左下奥
 	point[5] = { aabb.max.x ,aabb.min.y,aabb.max.z };//右下奥
-	point[6] = { aabb.min.x ,aabb.max.y ,aabb.max.z};//左上奥
+	point[6] = { aabb.min.x ,aabb.max.y ,aabb.max.z };//左上奥
 	point[7] = aabb.max;//右上奥
 
 	for (int i = 0; i < 8; i++)
 	{
 		point[i] = Transform(Transform(point[i], viewProjectionMatrix), viewportMatrix);
 	}
-	
+
 	Novice::DrawLine((int)point[0].x, (int)point[0].y, (int)point[1].x, (int)point[1].y, color);
 	Novice::DrawLine((int)point[0].x, (int)point[0].y, (int)point[2].x, (int)point[2].y, color);
 	Novice::DrawLine((int)point[0].x, (int)point[0].y, (int)point[4].x, (int)point[4].y, color);
@@ -287,17 +287,17 @@ void DrawAABB(const AABB& aabb, const Matrix4x4& viewProjectionMatrix, const Mat
 
 }
 
-void ReAABB(AABB &aabb)
+void ReAABB(AABB& aabb)
 {
 
-	
+
 	aabb.min.x = (std::min)(aabb.min.x, aabb.max.x);
 	aabb.max.x = (std::max)(aabb.min.x, aabb.max.x);
 	aabb.min.y = (std::min)(aabb.min.y, aabb.max.y);
 	aabb.max.y = (std::max)(aabb.min.y, aabb.max.y);
 	aabb.min.z = (std::min)(aabb.min.z, aabb.max.z);
 	aabb.max.z = (std::max)(aabb.min.z, aabb.max.z);
-	
+
 }
 
 
