@@ -7,6 +7,7 @@
 #include "Collision.h"
 #include "InputManager.h"
 #include "Camera.h"
+#include <stdlib.h>
 const char kWindowTitle[] = "LD2A_01_ヒサイチ_コウキ";
 
 // Windowsアプリでのエントリーポイント(main関数)
@@ -18,6 +19,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Novice::Initialize(kWindowTitle, kWindowWidth, kWindowHeight);
 
 	Camera* camera = new Camera;
+	AABB aabb1{
+		.min{-0.5f,-0.5f,-0.5f},
+		.max{0.0f,0.0f,0.0f}
+	};
+	AABB aabb2{
+		.min{0.2f,0.2f,0.2f},
+		.max{1.0f,1.0f,1.0f}
+	};
+
 	//Vector3 cameraPosition = { 0.0f,1.9f,-6.49f };
 
 	//Vector3 cameraRotate{ 0.26f,0.0f,0.0f };
@@ -30,12 +40,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	//float kAddMove = 0.02f;
 
-	Plane plane{ {0,1,0},1 };
+	/*Plane plane{ {0,1,0},1 };
 	Segment seg{ {0,0,0},{0.5f,0.5f,0.5f} };
 	Triangle triangle{};
 	triangle.vertices[0] = { -1,0,0 };
 	triangle.vertices[1] = { 0,1,0 };
-	triangle.vertices[2] = { 1,0,0 };
+	triangle.vertices[2] = { 1,0,0 };*/
 	// キー入力結果を受け取る箱
 	char keys[256] = { 0 };
 	char preKeys[256] = { 0 };
@@ -55,6 +65,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///------------------///
 
 
+		ReAABB(aabb1);
+		ReAABB(aabb2);
 		/*if (!camera->GetIsDebugMode())
 		{
 			if (keys[DIK_A])
@@ -128,7 +140,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///------------------///
 		DrawGridLine(camera->GetviewProjection(), camera->GetViewportMatrix());
 
+		DrawAABB(aabb1, camera->GetviewProjection(), camera->GetViewportMatrix(),WHITE);
+		if (AABB2AABBCollision(aabb1,aabb2))
+		{
+			DrawAABB(aabb2, camera->GetviewProjection(), camera->GetViewportMatrix(), RED);
 
+		}
+		else
+		{
+			DrawAABB(aabb2, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
+
+		}
+
+
+		
 		/*if (Speher2PlaneCollision(s1,plane))
 		{
 			DrawGridSphere(s1, camera->GetviewProjection(), camera->GetViewportMatrix(), RED);
@@ -143,7 +168,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//DrawGridSphere(s2, camera->GetviewProjection(), camera->GetViewportMatrix(), s2Color);
 		//DrawPlane(plane, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
 
-		if (Triangle2SegmentCollision(triangle,seg))
+		/*if (Triangle2SegmentCollision(triangle,seg))
 		{
 			DrawSegment(seg, camera->GetviewProjection(), camera->GetViewportMatrix(), RED);
 
@@ -152,34 +177,54 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		{
 			DrawSegment(seg, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
 
-		}
+		}*/
 
-		DrawTriangle(triangle, camera->GetviewProjection(), camera->GetViewportMatrix(),WHITE);
+		ImGui::Begin("debug");
+		if (ImGui::TreeNode("aabb1"))
+		{
+
+			ImGui::DragFloat3("aabb1.min", &aabb1.min.x, 0.01f);
+			ImGui::DragFloat3("aabb1.max", &aabb1.max.x, 0.01f);
+
+
+			ImGui::TreePop();
+		}
+		if (ImGui::TreeNode("aabb2"))
+		{
+
+			ImGui::DragFloat3("aabb2.min", &aabb1.min.x, 0.01f);
+			ImGui::DragFloat3("aabb2.max", &aabb1.max.x, 0.01f);
+
+
+			ImGui::TreePop();
+		}
+		ImGui::End();
+		//DrawTriangle(triangle, camera->GetviewProjection(), camera->GetViewportMatrix(),WHITE);
 		//ImGui::Begin("Debug");
 		//ImGui::DragFloat("sphere1Radius", &s1.radius, 0.01f);
 		//ImGui::DragFloat3("sphere1Position", &s1.centor.x, 0.01f);
 		/*ImGui::DragFloat("sphere2Radius", &s2.radius, 0.01f);
 		ImGui::DragFloat3("sphere2Position", &s2.centor.x, 0.01f);*/
 
-		if (ImGui::TreeNode("Triangle"))
-		{
-			
-			ImGui::DragFloat3("Triangle.vertex[0]", &triangle.vertices[0].x, 0.01f);
-			ImGui::DragFloat3("Triangle.vertex[1]", &triangle.vertices[1].x, 0.01f);
-			ImGui::DragFloat3("Triangle.vertex[2]", &triangle.vertices[2].x, 0.01f);
+		//if (ImGui::TreeNode("Triangle"))
+		//{
+		//	
+		//	ImGui::DragFloat3("Triangle.vertex[0]", &triangle.vertices[0].x, 0.01f);
+		//	ImGui::DragFloat3("Triangle.vertex[1]", &triangle.vertices[1].x, 0.01f);
+		//	ImGui::DragFloat3("Triangle.vertex[2]", &triangle.vertices[2].x, 0.01f);
 
-			ImGui::TreePop();
-		}
-		if (ImGui::TreeNode("Segment"))
-		{
-			ImGui::DragFloat3("segment.origin", &seg.origin.x, 0.01f);
-			ImGui::DragFloat3("segment.diff", &seg.diff.x, 0.01f);
+		//	ImGui::TreePop();
+		//}
+		//if (ImGui::TreeNode("Segment"))
+		//{
+		//	ImGui::DragFloat3("segment.origin", &seg.origin.x, 0.01f);
+		//	ImGui::DragFloat3("segment.diff", &seg.diff.x, 0.01f);
 
-			ImGui::TreePop();
-		}
-		//ImGui::End();
+		//	ImGui::TreePop();
+		//}
+		////ImGui::End();
 
-		plane.normal = Normalize(plane.normal);
+		//plane.normal = Normalize(plane.normal);
 
 
 

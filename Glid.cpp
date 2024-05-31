@@ -194,7 +194,7 @@ void DrawSegment(const Segment& segment, const Matrix4x4& viewProjectionMatrix, 
 {
 	Segment screenSeg{};
 	screenSeg.origin = Transform(Transform(segment.origin, viewProjectionMatrix), viewportMatrix);
-	screenSeg.diff = Add(segment.diff,segment.origin );
+	screenSeg.diff = Add(segment.diff, segment.origin);
 	screenSeg.diff = Transform(Transform(screenSeg.diff, viewProjectionMatrix), viewportMatrix);
 
 	Novice::DrawLine(int(screenSeg.origin.x), int(screenSeg.origin.y), int(screenSeg.diff.x), int(screenSeg.diff.y), color);
@@ -210,16 +210,16 @@ void DrawTriangle(const Triangle& triangle, const Matrix4x4& viewProjectionMatri
 	{
 		screenVertex[i] = Transform(Transform(triangle.vertices[i], viewProjectionMatrix), viewportMatrix);
 	}
-	
+
 	for (int i = 0; i < 3; i++)
 	{
-		if (i==2)
+		if (i == 2)
 		{
 			Novice::DrawLine(int(screenVertex[i].x), int(screenVertex[i].y), int(screenVertex[0].x), int(screenVertex[0].y), color);
 		}
 		else
 		{
-			Novice::DrawLine(int(screenVertex[i].x), int(screenVertex[i].y), int(screenVertex[i+1].x), int(screenVertex[i+1].y), color);
+			Novice::DrawLine(int(screenVertex[i].x), int(screenVertex[i].y), int(screenVertex[i + 1].x), int(screenVertex[i + 1].y), color);
 
 		}
 	}
@@ -229,12 +229,12 @@ void DrawTriangle(const Triangle& triangle, const Matrix4x4& viewProjectionMatri
 	Plane plane;
 	plane.normal = Cross(p1p2, p2p3);
 	plane.normal = Normalize(plane.normal);
-	plane.distance = Dot(plane.normal,triangle.vertices[0]);
+	plane.distance = Dot(plane.normal, triangle.vertices[0]);
 
 	Vector3 triangleCenter = Add(Add(triangle.vertices[0], triangle.vertices[1]), triangle.vertices[2]);
 
 	triangleCenter /= 3;
-	
+
 	//VectorScreenPrintf(0, 20, triangleCenter, "triangleCenter");
 
 	triangleCenter = Transform(Transform(triangleCenter, viewProjectionMatrix), viewportMatrix);
@@ -243,6 +243,61 @@ void DrawTriangle(const Triangle& triangle, const Matrix4x4& viewProjectionMatri
 	//DrawPlane(plane, viewProjectionMatrix, viewportMatrix, color);
 }
 
+void DrawAABB(const AABB& aabb, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color)
+{
 
+	Vector3 point[8];
+	point[0] = aabb.min;//左下手前
+	point[1] = { aabb.max.x ,aabb.min.y,aabb.min.z };//右下手前
+	point[2] = { aabb.min.x,aabb.max.y,aabb.min.z };//左上手前
+	point[3] = { aabb.max.x ,aabb.max.y ,aabb.min.z };//右上手前
+
+	point[4] = { aabb.min.x,aabb.min.y,aabb.max.z  };//左下奥
+	point[5] = { aabb.max.x ,aabb.min.y,aabb.max.z };//右下奥
+	point[6] = { aabb.min.x ,aabb.max.y ,aabb.max.z};//左上奥
+	point[7] = aabb.max;//右上奥
+
+	for (int i = 0; i < 8; i++)
+	{
+		point[i] = Transform(Transform(point[i], viewProjectionMatrix), viewportMatrix);
+	}
+	
+	Novice::DrawLine((int)point[0].x, (int)point[0].y, (int)point[1].x, (int)point[1].y, color);
+	Novice::DrawLine((int)point[0].x, (int)point[0].y, (int)point[2].x, (int)point[2].y, color);
+	Novice::DrawLine((int)point[0].x, (int)point[0].y, (int)point[4].x, (int)point[4].y, color);
+
+	Novice::DrawLine((int)point[7].x, (int)point[7].y, (int)point[3].x, (int)point[3].y, color);
+	Novice::DrawLine((int)point[7].x, (int)point[7].y, (int)point[5].x, (int)point[5].y, color);
+	Novice::DrawLine((int)point[7].x, (int)point[7].y, (int)point[6].x, (int)point[6].y, color);
+
+	Novice::DrawLine((int)point[2].x, (int)point[2].y, (int)point[6].x, (int)point[6].y, color);
+	Novice::DrawLine((int)point[1].x, (int)point[1].y, (int)point[5].x, (int)point[5].y, color);
+
+	Novice::DrawLine((int)point[2].x, (int)point[2].y, (int)point[3].x, (int)point[3].y, color);
+	Novice::DrawLine((int)point[4].x, (int)point[4].y, (int)point[5].x, (int)point[5].y, color);
+
+	Novice::DrawLine((int)point[1].x, (int)point[1].y, (int)point[3].x, (int)point[3].y, color);
+	Novice::DrawLine((int)point[4].x, (int)point[4].y, (int)point[6].x, (int)point[6].y, color);
+
+
+	Novice::DrawEllipse(int(point[7].x), int(point[7].y), 5, 5, 0, RED, kFillModeSolid);
+	Novice::DrawEllipse(int(point[0].x), int(point[0].y), 5, 5, 0, BLUE, kFillModeSolid);
+
+
+
+}
+
+void ReAABB(AABB &aabb)
+{
+
+	
+	aabb.min.x = (std::min)(aabb.min.x, aabb.max.x);
+	aabb.max.x = (std::max)(aabb.min.x, aabb.max.x);
+	aabb.min.y = (std::min)(aabb.min.y, aabb.max.y);
+	aabb.max.y = (std::max)(aabb.min.y, aabb.max.y);
+	aabb.min.z = (std::min)(aabb.min.z, aabb.max.z);
+	aabb.max.z = (std::max)(aabb.min.z, aabb.max.z);
+	
+}
 
 
