@@ -19,33 +19,26 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Novice::Initialize(kWindowTitle, kWindowWidth, kWindowHeight);
 
 	Camera* camera = new Camera;
-	AABB aabb1{
+	/*AABB aabb1{
 		.min{-0.5f,-0.5f,-0.5f},
 		.max{0.5f,0.5f,0.5f}
 	};
 	Segment seg = {
 		.origin{-0.7f,0.3f,0.0f},
 		.diff{2.0f,-0.5f,0.0f}
+	};*/
+
+	Vector3 rotate{};
+	OBB obb{
+		.center{-1.0f,0.0f,0.0f },
+		.orientations = {{1.0f,0.0f,0.0f},
+		{0.0f,1.0f,0.0f},
+		{0.0f,0.0f,1.0f}},
+		.size{0.5f,0.5f,0.5f}
 	};
 
-	//Vector3 cameraPosition = { 0.0f,1.9f,-6.49f };
-
-	//Vector3 cameraRotate{ 0.26f,0.0f,0.0f };
-	//Vector3 cameraVector = { 0,0,1 };
-	//cameraVector *= cameraRotate;
-
-	//Sphere s1{ {0,0,0},0.5f };
-	//Sphere s2{ {-1,0,0},0.5f };
-	//int s2Color = WHITE;
-
-	//float kAddMove = 0.02f;
-
-	/*Plane plane{ {0,1,0},1 };
-	Segment seg{ {0,0,0},{0.5f,0.5f,0.5f} };
-	Triangle triangle{};
-	triangle.vertices[0] = { -1,0,0 };
-	triangle.vertices[1] = { 0,1,0 };
-	triangle.vertices[2] = { 1,0,0 };*/
+	Matrix4x4 rotateMatrix;
+	
 	// キー入力結果を受け取る箱
 	char keys[256] = { 0 };
 	char preKeys[256] = { 0 };
@@ -64,8 +57,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///------------------///
 
+		rotateMatrix = MakeRotateXYZMatrix(rotate);
+		obb.orientations[0].x = rotateMatrix.m[0][0];
+		obb.orientations[0].y = rotateMatrix.m[0][1];
+		obb.orientations[0].z = rotateMatrix.m[0][2];
 
-		ReAABB(aabb1);
+		obb.orientations[1].x = rotateMatrix.m[1][0];
+		obb.orientations[1].y = rotateMatrix.m[1][1];
+		obb.orientations[1].z = rotateMatrix.m[1][2];
+
+		obb.orientations[2].x = rotateMatrix.m[2][0];
+		obb.orientations[2].y = rotateMatrix.m[2][1];
+		obb.orientations[2].z = rotateMatrix.m[2][2];
+
+		//ReAABB(aabb1);
 
 		/*if (!camera->GetIsDebugMode())
 		{
@@ -140,8 +145,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///------------------///
 		DrawGridLine(camera->GetviewProjection(), camera->GetViewportMatrix());
 
+		DrawOBB(obb, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
 
-		DrawSegment(seg, camera->GetviewProjection(), camera->GetViewportMatrix(),WHITE);
+
+		/*DrawSegment(seg, camera->GetviewProjection(), camera->GetViewportMatrix(),WHITE);
 		if (AABB2Segment(aabb1,seg))
 		{
 			DrawAABB(aabb1, camera->GetviewProjection(), camera->GetViewportMatrix(), RED);
@@ -151,7 +158,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		{
 			DrawAABB(aabb1, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
 
-		}
+		}*/
 
 
 
@@ -181,24 +188,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}*/
 
 		ImGui::Begin("debug");
-		if (ImGui::TreeNode("aabb1"))
+		if (ImGui::TreeNode("OBB"))
 		{
 
-			ImGui::DragFloat3("aabb1.min", &aabb1.min.x, 0.01f);
-			ImGui::DragFloat3("aabb1.max", &aabb1.max.x, 0.01f);
+			ImGui::DragFloat3("obb.size", &obb.size.x, 0.01f);
+			ImGui::DragFloat3("obb.rotate", &rotate.x, 0.01f);
+			ImGui::DragFloat3("obb.center", &obb.center.x, 0.01f);
 
 
 			ImGui::TreePop();
 		}
-		if (ImGui::TreeNode("segment"))
-		{
-
-			ImGui::DragFloat3("seg.origin", &seg.origin.x, 0.01f);
-			ImGui::DragFloat3("seg.diff", &seg.diff.x, 0.01f);
-
-
-			ImGui::TreePop();
-		}
+		
 		ImGui::End();
 		//DrawTriangle(triangle, camera->GetviewProjection(), camera->GetViewportMatrix(),WHITE);
 		//ImGui::Begin("Debug");

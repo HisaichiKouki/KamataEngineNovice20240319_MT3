@@ -19,3 +19,6 @@ void DrawTriangle(const Triangle& triangle, const Matrix4x4& viewProjectionMatri
 void DrawAABB(const AABB& aabb, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
 
 void ReAABB( AABB &aabb);
+
+void DrawOBB(const OBB& obb, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
+

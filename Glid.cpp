@@ -300,4 +300,68 @@ void ReAABB(AABB& aabb)
 
 }
 
+void DrawOBB(const OBB& obb, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color)
+{
+
+	Matrix4x4 worldMatrix;
+	worldMatrix.m[0][0] = obb.orientations[0].x;
+	worldMatrix.m[0][1] = obb.orientations[0].y;
+	worldMatrix.m[0][2] = obb.orientations[0].z;
+	worldMatrix.m[0][3] = 0;
+
+	worldMatrix.m[1][0] = obb.orientations[1].x;
+	worldMatrix.m[1][1] = obb.orientations[1].y;
+	worldMatrix.m[1][2] = obb.orientations[1].z;
+	worldMatrix.m[1][3] = 0;
+
+	worldMatrix.m[2][0] = obb.orientations[2].x;
+	worldMatrix.m[2][1] = obb.orientations[2].y;
+	worldMatrix.m[2][2] = obb.orientations[2].z;
+	worldMatrix.m[2][3] = 0;
+
+	worldMatrix.m[3][0] = obb.center.x;
+	worldMatrix.m[3][1] = obb.center.y;
+	worldMatrix.m[3][2] = obb.center.z;
+	worldMatrix.m[3][3] = 1;
+
+	Vector3 point[8]{};
+
+	//手前
+	point[0] = Transform({ -obb.size.x,-obb.size.y,-obb.size.z }, worldMatrix);//左下
+	point[1] = Transform({ obb.size.x,-obb.size.y,-obb.size.z }, worldMatrix);//右下
+	point[2] = Transform({ -obb.size.x,obb.size.y,-obb.size.z }, worldMatrix);//左上
+	point[3] = Transform({ obb.size.x,obb.size.y,-obb.size.z }, worldMatrix);//右上
+
+	//奥
+	point[4] = Transform({ -obb.size.x,-obb.size.y,+obb.size.z }, worldMatrix);//左下
+	point[5] = Transform({ obb.size.x,-obb.size.y,+obb.size.z }, worldMatrix);//右下
+	point[6] = Transform({ -obb.size.x,obb.size.y,+obb.size.z }, worldMatrix);//左上
+	point[7] = Transform({ obb.size.x,obb.size.y,+obb.size.z }, worldMatrix);//右上
+
+
+	for (int i = 0; i < 8; i++)
+	{
+		point[i] = Transform(Transform(point[i], viewProjectionMatrix), viewportMatrix);
+	}
+
+	Novice::DrawLine((int)point[0].x, (int)point[0].y, (int)point[1].x, (int)point[1].y, color);
+	Novice::DrawLine((int)point[0].x, (int)point[0].y, (int)point[2].x, (int)point[2].y, color);
+	Novice::DrawLine((int)point[0].x, (int)point[0].y, (int)point[4].x, (int)point[4].y, color);
+
+	Novice::DrawLine((int)point[7].x, (int)point[7].y, (int)point[3].x, (int)point[3].y, color);
+	Novice::DrawLine((int)point[7].x, (int)point[7].y, (int)point[5].x, (int)point[5].y, color);
+	Novice::DrawLine((int)point[7].x, (int)point[7].y, (int)point[6].x, (int)point[6].y, color);
+
+	Novice::DrawLine((int)point[2].x, (int)point[2].y, (int)point[6].x, (int)point[6].y, color);
+	Novice::DrawLine((int)point[1].x, (int)point[1].y, (int)point[5].x, (int)point[5].y, color);
+
+	Novice::DrawLine((int)point[2].x, (int)point[2].y, (int)point[3].x, (int)point[3].y, color);
+	Novice::DrawLine((int)point[4].x, (int)point[4].y, (int)point[5].x, (int)point[5].y, color);
+
+	Novice::DrawLine((int)point[1].x, (int)point[1].y, (int)point[3].x, (int)point[3].y, color);
+	Novice::DrawLine((int)point[4].x, (int)point[4].y, (int)point[6].x, (int)point[6].y, color);
+
+
+}
+
 
