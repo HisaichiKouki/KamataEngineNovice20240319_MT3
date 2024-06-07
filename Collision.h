@@ -15,6 +15,12 @@ bool AABB2AABBCollision(const AABB& aabb1, const AABB& aabb2);
 
 bool AABB2SphereCollision(const AABB& aabb, const Sphere& sphere);
 
+bool IntersectsAABB(const AABB& aabb, const Segment& seg,float&tmin,float& tmax);
+
 bool AABB2Segment(const AABB& aabb, const Segment& seg);
+
+bool AABB2Ray(const AABB& aabb, const Ray& ray);
+
+bool AABB2Line(const AABB& aabb, const Line& line);
 
 bool OBB2Sphere(const OBB& obb, const Sphere& sphere);

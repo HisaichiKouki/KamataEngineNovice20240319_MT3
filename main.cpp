@@ -148,6 +148,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///------------------///
 		DrawGridLine(camera->GetviewProjection(), camera->GetViewportMatrix());
+		DrawAABB(aabb1, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
 
 		DrawOBB(obb, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
 
@@ -163,14 +164,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/*DrawSegment(seg, camera->GetviewProjection(), camera->GetViewportMatrix(),WHITE);
 		if (AABB2Segment(aabb1,seg))
 		{
-			DrawAABB(aabb1, camera->GetviewProjection(), camera->GetViewportMatrix(), RED);
+			DrawSegment(seg, camera->GetviewProjection(), camera->GetViewportMatrix(), RED);
 
 		}
 		else
 		{
-			DrawAABB(aabb1, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
+			DrawSegment(seg, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
 
 		}*/
+
 
 
 
