@@ -88,9 +88,9 @@ void DrawGridSphere(const Sphere& sphere, const Matrix4x4& viewProjectionMatrix,
 			c.y = sinf(lat);
 			c.z = cosf(lat) * sinf(lon + kLonD);
 
-			a = Multiply(sphere.radius, a) + sphere.centor;
-			b = Multiply(sphere.radius, b) + sphere.centor;
-			c = Multiply(sphere.radius, c) + sphere.centor;
+			a = Multiply(sphere.radius, a) + sphere.center;
+			b = Multiply(sphere.radius, b) + sphere.center;
+			c = Multiply(sphere.radius, c) + sphere.center;
 
 
 			//Matrix4x4 worldviewProjectionMatrix = Multiply(sphere.worldMatrix, viewProjectionMatrix);

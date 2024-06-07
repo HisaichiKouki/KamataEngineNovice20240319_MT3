@@ -2,7 +2,7 @@
 
 bool SpherCollision(const Sphere& s1, const Sphere& s2)
 {
-	float distance = Length(Subtract(s2.centor, s1.centor));
+	float distance = Length(Subtract(s2.center, s1.center));
 	if (distance <= s1.radius + s2.radius)
 	{
 		return true;
@@ -12,7 +12,7 @@ bool SpherCollision(const Sphere& s1, const Sphere& s2)
 
 bool Speher2PlaneCollision(const Sphere& s1, const Plane& p1)
 {
-	float k = Dot(p1.normal, s1.centor) - p1.distance;
+	float k = Dot(p1.normal, s1.center) - p1.distance;
 	k = fabsf(k);
 
 	if (k <= s1.radius)
@@ -86,11 +86,11 @@ bool AABB2AABBCollision(const AABB& aabb1, const AABB& aabb2)
 bool AABB2SphereCollision(const AABB& aabb, const Sphere& sphere)
 {
 	Vector3 colossetPoint;
-	colossetPoint.x = std::clamp(sphere.centor.x, aabb.min.x, aabb.max.x);
-	colossetPoint.y = std::clamp(sphere.centor.y, aabb.min.y, aabb.max.y);
-	colossetPoint.z = std::clamp(sphere.centor.z, aabb.min.z, aabb.max.z);
+	colossetPoint.x = std::clamp(sphere.center.x, aabb.min.x, aabb.max.x);
+	colossetPoint.y = std::clamp(sphere.center.y, aabb.min.y, aabb.max.y);
+	colossetPoint.z = std::clamp(sphere.center.z, aabb.min.z, aabb.max.z);
 
-	float distance = Length(colossetPoint - sphere.centor);
+	float distance = Length(colossetPoint - sphere.center);
 	if (distance <= sphere.radius)
 	{
 		return true;
@@ -130,5 +130,46 @@ bool AABB2Segment(const AABB& aabb, const Segment& seg)
 	}
 
 
+	return false;
+}
+
+bool OBB2Sphere(const OBB& obb, const Sphere& sphere)
+{
+
+	Matrix4x4 oBBworldMatrix;
+	oBBworldMatrix.m[0][0] = obb.orientations[0].x;
+	oBBworldMatrix.m[0][1] = obb.orientations[0].y;
+	oBBworldMatrix.m[0][2] = obb.orientations[0].z;
+	oBBworldMatrix.m[0][3] = 0;
+
+	oBBworldMatrix.m[1][0] = obb.orientations[1].x;
+	oBBworldMatrix.m[1][1] = obb.orientations[1].y;
+	oBBworldMatrix.m[1][2] = obb.orientations[1].z;
+	oBBworldMatrix.m[1][3] = 0;
+
+	oBBworldMatrix.m[2][0] = obb.orientations[2].x;
+	oBBworldMatrix.m[2][1] = obb.orientations[2].y;
+	oBBworldMatrix.m[2][2] = obb.orientations[2].z;
+	oBBworldMatrix.m[2][3] = 0;
+
+	oBBworldMatrix.m[3][0] = obb.center.x;
+	oBBworldMatrix.m[3][1] = obb.center.y;
+	oBBworldMatrix.m[3][2] = obb.center.z;
+	oBBworldMatrix.m[3][3] = 1;
+
+	Matrix4x4 obbWorldMatrixInverce = Inverse(oBBworldMatrix);
+
+	Vector3 centerInObbLocalSpace = Transform(sphere.center, obbWorldMatrixInverce);
+
+	AABB aabbObbLocal{};
+	aabbObbLocal.min = obb.size * -1;
+	aabbObbLocal.max = obb.size;
+
+	Sphere obbLocalSphere{ centerInObbLocalSpace,sphere.radius };
+	if (AABB2SphereCollision(aabbObbLocal, obbLocalSphere))
+	{
+		return true;
+	}
+	
 	return false;
 }

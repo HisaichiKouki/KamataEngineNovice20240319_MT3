@@ -16,3 +16,5 @@ bool AABB2AABBCollision(const AABB& aabb1, const AABB& aabb2);
 bool AABB2SphereCollision(const AABB& aabb, const Sphere& sphere);
 
 bool AABB2Segment(const AABB& aabb, const Segment& seg);
+
+bool OBB2Sphere(const OBB& obb, const Sphere& sphere);

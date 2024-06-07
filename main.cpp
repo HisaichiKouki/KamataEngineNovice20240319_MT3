@@ -37,8 +37,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		.size{0.5f,0.5f,0.5f}
 	};
 
+	Sphere sphre{
+		.center{0.0f,0.0f,0.0f },
+		.radius{0.5f} };
+
 	Matrix4x4 rotateMatrix;
-	
+
 	// キー入力結果を受け取る箱
 	char keys[256] = { 0 };
 	char preKeys[256] = { 0 };
@@ -147,6 +151,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		DrawOBB(obb, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
 
+		if (OBB2Sphere(obb, sphre)) {
+			DrawGridSphere(sphre, camera->GetviewProjection(), camera->GetViewportMatrix(), RED);
+		}
+		else
+		{
+			DrawGridSphere(sphre, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
+
+		}
 
 		/*DrawSegment(seg, camera->GetviewProjection(), camera->GetViewportMatrix(),WHITE);
 		if (AABB2Segment(aabb1,seg))
@@ -198,7 +210,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			ImGui::TreePop();
 		}
-		
+		if (ImGui::TreeNode("Sphere"))
+		{
+
+			
+			ImGui::DragFloat3("sphere.center", &sphre.center.x, 0.01f);
+			ImGui::DragFloat("sphere.radius", &sphre.radius, 0.01f);
+
+			ImGui::TreePop();
+		}
 		ImGui::End();
 		//DrawTriangle(triangle, camera->GetviewProjection(), camera->GetViewportMatrix(),WHITE);
 		//ImGui::Begin("Debug");

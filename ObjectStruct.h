@@ -3,7 +3,7 @@
 #include <Vector2.h>
 struct Sphere
 {
-	Vector3 centor;
+	Vector3 center;
 	float radius;
 	//Vector3 rotate;
 	//Matrix4x4 worldMatrix;
