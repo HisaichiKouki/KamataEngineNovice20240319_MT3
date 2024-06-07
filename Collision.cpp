@@ -193,3 +193,44 @@ bool OBB2Sphere(const OBB& obb, const Sphere& sphere)
 	
 	return false;
 }
+
+bool OBB2Segment(const OBB& obb, const Segment& segment)
+{
+	Matrix4x4 oBBworldMatrix;
+	oBBworldMatrix.m[0][0] = obb.orientations[0].x;
+	oBBworldMatrix.m[0][1] = obb.orientations[0].y;
+	oBBworldMatrix.m[0][2] = obb.orientations[0].z;
+	oBBworldMatrix.m[0][3] = 0;
+
+	oBBworldMatrix.m[1][0] = obb.orientations[1].x;
+	oBBworldMatrix.m[1][1] = obb.orientations[1].y;
+	oBBworldMatrix.m[1][2] = obb.orientations[1].z;
+	oBBworldMatrix.m[1][3] = 0;
+
+	oBBworldMatrix.m[2][0] = obb.orientations[2].x;
+	oBBworldMatrix.m[2][1] = obb.orientations[2].y;
+	oBBworldMatrix.m[2][2] = obb.orientations[2].z;
+	oBBworldMatrix.m[2][3] = 0;
+
+	oBBworldMatrix.m[3][0] = obb.center.x;
+	oBBworldMatrix.m[3][1] = obb.center.y;
+	oBBworldMatrix.m[3][2] = obb.center.z;
+	oBBworldMatrix.m[3][3] = 1;
+
+	Matrix4x4 obbWorldMatrixInverce = Inverse(oBBworldMatrix);
+
+
+	Vector3 localOrigin = Transform(segment.origin, obbWorldMatrixInverce);
+	Vector3 localEnd = Transform(Add(segment.origin, segment.diff), obbWorldMatrixInverce);
+
+	AABB aabbObbLocal{};
+	aabbObbLocal.min = obb.size * -1;
+	aabbObbLocal.max = obb.size;
+
+	Segment localSeg;
+	localSeg.origin = localOrigin;
+	localSeg.diff = localEnd - localOrigin;
+	return AABB2Segment(aabbObbLocal, localSeg);
+
+
+}

@@ -37,9 +37,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		.size{0.5f,0.5f,0.5f}
 	};
 
-	Sphere sphre{
-		.center{0.0f,0.0f,0.0f },
-		.radius{0.5f} };
+	Segment segment{
+		.origin{-0.8f,-0.3f,0.0f},
+		.diff{0.5f,0.5f,0.5f}
+	};
 
 	Matrix4x4 rotateMatrix;
 
@@ -152,12 +153,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		DrawOBB(obb, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
 
-		if (OBB2Sphere(obb, sphre)) {
-			DrawGridSphere(sphre, camera->GetviewProjection(), camera->GetViewportMatrix(), RED);
+		if (OBB2Segment(obb, segment)) {
+			DrawSegment(segment, camera->GetviewProjection(), camera->GetViewportMatrix(), RED);
 		}
 		else
 		{
-			DrawGridSphere(sphre, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
+			DrawSegment(segment, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
 
 		}
 
@@ -212,12 +213,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			ImGui::TreePop();
 		}
-		if (ImGui::TreeNode("Sphere"))
+		if (ImGui::TreeNode("segment"))
 		{
 
-			
-			ImGui::DragFloat3("sphere.center", &sphre.center.x, 0.01f);
-			ImGui::DragFloat("sphere.radius", &sphre.radius, 0.01f);
+
+			ImGui::DragFloat3("segment.origin", &segment.origin.x, 0.01f);
+			ImGui::DragFloat3("segment.diff", &segment.diff.x, 0.01f);
 
 			ImGui::TreePop();
 		}
