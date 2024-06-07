@@ -148,7 +148,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///------------------///
 		DrawGridLine(camera->GetviewProjection(), camera->GetViewportMatrix());
-		DrawAABB(aabb1, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
+		//DrawAABB(aabb1, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
 
 		DrawOBB(obb, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
 
