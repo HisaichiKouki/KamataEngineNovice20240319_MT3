@@ -27,7 +27,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		.origin{-0.7f,0.3f,0.0f},
 		.diff{2.0f,-0.5f,0.0f}
 	};
-
+	
 	//Vector3 cameraPosition = { 0.0f,1.9f,-6.49f };
 
 	//Vector3 cameraRotate{ 0.26f,0.0f,0.0f };
@@ -139,19 +139,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///------------------///
 		DrawGridLine(camera->GetviewProjection(), camera->GetViewportMatrix());
+		DrawAABB(aabb1, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
 
-
-		DrawSegment(seg, camera->GetviewProjection(), camera->GetViewportMatrix(),WHITE);
-		if (AABB2Segment(aabb1,seg))
+		if (AABB2Segment(aabb1, seg))
 		{
-			DrawAABB(aabb1, camera->GetviewProjection(), camera->GetViewportMatrix(), RED);
+			DrawSegment(seg, camera->GetviewProjection(), camera->GetViewportMatrix(), RED);
 
 		}
 		else
 		{
-			DrawAABB(aabb1, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
+			DrawSegment(seg, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
 
 		}
+		
 
 
 

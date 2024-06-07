@@ -1,4 +1,4 @@
-#include "Collision.h"
+﻿#include "Collision.h"
 
 bool SpherCollision(const Sphere& s1, const Sphere& s2)
 {
@@ -98,7 +98,7 @@ bool AABB2SphereCollision(const AABB& aabb, const Sphere& sphere)
 	return false;
 }
 
-bool AABB2Segment(const AABB& aabb, const Segment& seg)
+bool IntersectsAABB(const AABB& aabb, const Segment& seg, float& tmin, float& tmax)
 {
 	float tMinX = (aabb.min.x - seg.origin.x) / seg.diff.x;
 	float tMaxX = (aabb.max.x - seg.origin.x) / seg.diff.x;
@@ -109,26 +109,46 @@ bool AABB2Segment(const AABB& aabb, const Segment& seg)
 
 	Vector3 tNear = { (std::min)(tMinX,tMaxX),(std::min)(tMinY,tMaxY),(std::min)(tMinZ,tMaxZ) };
 	Vector3 tFar = { (std::max)(tMinX,tMaxX),(std::max)(tMinY,tMaxY),(std::max)(tMinZ,tMaxZ) };
-
-	float tmin = max(max(tNear.x, tNear.y), tNear.z);
-	float tmax = min(min(tFar.x, tFar.y), tFar.z);
+	
+	tmin = (std::max)({ tNear.x, tNear.y, tNear.z });
+	tmax = (std::min)({ tFar.x, tFar.y, tFar.z });
+	//tmin = max(max(tNear.x, tNear.y), tNear.z);
+	//tmax = min(min(tFar.x, tFar.y), tFar.z);
 
 	Novice::ScreenPrintf(0, 0, "tmin=%f", tmin);
 	Novice::ScreenPrintf(0, 20, "tmax=%f", tmax);
 
-	/*if (tmin<=1.0f&&tmin>=0.0f)
-	{
-		return true;
-	}*/
+	return tmin <= tmax;
 	
-	if (tmin <= tmax) {
-		if (tmin>=0&&tmin<=1.0f||tmax>=0.0f&&tmax<=1.0f)
-		{
-			return true;
+}
 
-		}
+bool AABB2Segment(const AABB& aabb, const Segment& seg)
+{
+	float tmin, tmax;
+	if (!IntersectsAABB(aabb, seg, tmin, tmax)) {
+		return false;
 	}
+	return (tmin <= 1.0f && tmax >= 0.0f);
+}
 
+bool AABB2Ray(const AABB& aabb, const Ray& ray)
+{
+	float tmin, tmax;
+	Segment segment{};
+	segment.origin = ray.origin;
+	segment.diff = ray.diff;
+	if (!IntersectsAABB(aabb, segment, tmin, tmax))
+		return false;
 
-	return false;
+	return tmax >= 0.0f;
+	
+}
+
+bool AABB2Line(const AABB& aabb, const Line& line)
+{
+	Segment segment{};
+	segment.origin = line.origin;
+	segment.diff = line.diff;
+	float tmin, tmax;
+	return IntersectsAABB(aabb, segment, tmin, tmax);
 }
