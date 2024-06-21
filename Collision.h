@@ -2,6 +2,7 @@
 #include "ObjectStruct.h"
 #include <stdlib.h>
 #include <algorithm>
+#include "ProjectFunction.h"
 
 bool SpherCollision(const Sphere& s1, const Sphere& s2);
 

@@ -237,8 +237,6 @@ bool OBB2Segment(const OBB& obb, const Segment& segment)
 
 bool Obb2Obb(const OBB& obb1, const OBB& obb2)
 {
-
-
 	//obb1
 	Matrix4x4 worldMatrix[2];
 	worldMatrix[0].m[0][0] = obb1.orientations[0].x;
@@ -263,6 +261,7 @@ bool Obb2Obb(const OBB& obb1, const OBB& obb2)
 
 	Vector3 point1[8]{};
 
+	//ローカルからワールド座標に変換
 	//手前
 	point1[0] = Transform({ -obb1.size.x,-obb1.size.y,-obb1.size.z }, worldMatrix[0]);//左下
 	point1[1] = Transform({ obb1.size.x,-obb1.size.y,-obb1.size.z }, worldMatrix[0]);//右下
@@ -274,6 +273,7 @@ bool Obb2Obb(const OBB& obb1, const OBB& obb2)
 	point1[5] = Transform({ obb1.size.x,-obb1.size.y,+obb1.size.z }, worldMatrix[0]);//右下
 	point1[6] = Transform({ -obb1.size.x,obb1.size.y,+obb1.size.z }, worldMatrix[0]);//左上
 	point1[7] = Transform({ obb1.size.x,obb1.size.y,+obb1.size.z }, worldMatrix[0]);//右上
+	//ここまではきちんと、OBBの角に描画される事を確認
 
 	//obb2
 	worldMatrix[1].m[0][0] = obb2.orientations[0].x;
@@ -298,6 +298,7 @@ bool Obb2Obb(const OBB& obb1, const OBB& obb2)
 
 	Vector3 point2[8]{};
 
+	//ローカルからワールド座標に変換
 	//手前
 	point2[0] = Transform({ -obb2.size.x,-obb2.size.y,-obb2.size.z }, worldMatrix[1]);//左下
 	point2[1] = Transform({ obb2.size.x,-obb2.size.y,-obb2.size.z }, worldMatrix[1]);//右下
@@ -309,18 +310,67 @@ bool Obb2Obb(const OBB& obb1, const OBB& obb2)
 	point2[5] = Transform({ obb2.size.x,-obb2.size.y,+obb2.size.z }, worldMatrix[1]);//右下
 	point2[6] = Transform({ -obb2.size.x,obb2.size.y,+obb2.size.z }, worldMatrix[1]);//左上
 	point2[7] = Transform({ obb2.size.x,obb2.size.y,+obb2.size.z }, worldMatrix[1]);//右上
+	//ここまではきちんと、OBBの角に描画される事を確認
+
+
+
 
 	Vector3 nomalPlan[6];
 	nomalPlan[0] = obb1.orientations[0];
-	nomalPlan[1] = obb1.orientations[0];
-	nomalPlan[2] = obb1.orientations[0];
+	nomalPlan[1] = obb1.orientations[1];
+	nomalPlan[2] = obb1.orientations[2];
+	nomalPlan[3] = obb2.orientations[0];
+	nomalPlan[4] = obb2.orientations[1];
+	nomalPlan[5] = obb2.orientations[2];
+
 
 	Vector3 projectionPoint1[8];
+	Vector3 projectionPoint2[8];
+
+	float length1[8];
+	float length2[8];
+
+	bool normalHit[6];
+
+	float sumSpan;
+	float longSpnan;
+	//面法線の当たり判定
+	//面法線に射影してる
+	
+	for (int j = 0; j < 6; j++)
+	{
+		for (int i = 0; i < 8; i++)
+		{
+			//Dot(各頂点,面法線の単位ベクトル)*面法線を単位ベクトルで射影ベクトルを出している
+			//演算子オーバーロードの関係で順番が入れ替わってるけど、掛け算なので問題ないはず
+			projectionPoint1[i] = Project(point1[i], nomalPlan[j]);
+			projectionPoint2[i] = Project(point2[i], nomalPlan[j]);
+			length1[i] = Length(projectionPoint1[i]);
+			length2[i] = Length(projectionPoint2[i]);
+			
+		}
+
+
+		float max1 = length1[0];
+		float min1 = length1[0];
+		float max2 = length2[0];
+		float min2 = length2[0];
+
+		for (int i = 1; i < 8; i++)
+		{
+			if (max1 < length1[i]) { max1 = length1[i]; }
+			if (min1 > length1[i]) { min1 = length1[i]; }
+
+			if (max2 < length2[i]) { max2 = length2[i]; }
+			if (min2 > length2[i]) { min2 = length2[i]; }
+		}
+	}
+		
 
 	for (int i = 0; i < 8; i++)
 	{
-		projectionPoint1[i] = Normalize(nomalPlan[0])* Dot(point1[i], Normalize(nomalPlan[0]));
-	}
 
+	}
+	
 	return false;
 }

@@ -3,6 +3,7 @@
 #include <Novice.h>
 #include "ObjectStruct.h"
 #include <stdlib.h>
+#include "ProjectFunction.h"
 
 void DrawGridLine(const Matrix4x4& viewProjectionMat, const Matrix4x4& viewportMat);
 
@@ -24,4 +25,4 @@ void DrawOBB(const OBB& obb, const Matrix4x4& viewProjectionMatrix, const Matrix
 
 void OBBPointDraw(const OBB& obb, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix);
 
-void Obb2NormalPlaneDraw(const OBB& obb1, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix,int planeNum);
+void Obb2NormalPlaneDraw(const OBB& obb1, const OBB& obb2, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix,int planeNum);

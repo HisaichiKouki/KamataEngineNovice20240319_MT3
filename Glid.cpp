@@ -423,10 +423,10 @@ void OBBPointDraw(const OBB& obb, const Matrix4x4& viewProjectionMatrix, const M
 
 }
 
-void Obb2NormalPlaneDraw(const OBB& obb1, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, int planeNum)
+void Obb2NormalPlaneDraw(const OBB& obb1, const OBB& obb2, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, int planeNum)
 {
 	//obb1
-	Matrix4x4 worldMatrix[1];
+	Matrix4x4 worldMatrix[2];
 	worldMatrix[0].m[0][0] = obb1.orientations[0].x;
 	worldMatrix[0].m[0][1] = obb1.orientations[0].y;
 	worldMatrix[0].m[0][2] = obb1.orientations[0].z;
@@ -463,6 +463,43 @@ void Obb2NormalPlaneDraw(const OBB& obb1, const Matrix4x4& viewProjectionMatrix,
 	point1[7] = Transform({ obb1.size.x,obb1.size.y,+obb1.size.z }, worldMatrix[0]);//右上
 	//ここまではきちんと、OBBの角に描画される事を確認
 	
+	//obb2
+	worldMatrix[1].m[0][0] = obb2.orientations[0].x;
+	worldMatrix[1].m[0][1] = obb2.orientations[0].y;
+	worldMatrix[1].m[0][2] = obb2.orientations[0].z;
+	worldMatrix[1].m[0][3] = 0;
+
+	worldMatrix[1].m[1][0] = obb2.orientations[1].x;
+	worldMatrix[1].m[1][1] = obb2.orientations[1].y;
+	worldMatrix[1].m[1][2] = obb2.orientations[1].z;
+	worldMatrix[1].m[1][3] = 0;
+
+	worldMatrix[1].m[2][0] = obb2.orientations[2].x;
+	worldMatrix[1].m[2][1] = obb2.orientations[2].y;
+	worldMatrix[1].m[2][2] = obb2.orientations[2].z;
+	worldMatrix[1].m[2][3] = 0;
+
+	worldMatrix[1].m[3][0] = obb2.center.x;
+	worldMatrix[1].m[3][1] = obb2.center.y;
+	worldMatrix[1].m[3][2] = obb2.center.z;
+	worldMatrix[1].m[3][3] = 1;
+
+	Vector3 point2[8]{};
+
+	//ローカルからワールド座標に変換
+	//手前
+	point2[0] = Transform({ -obb2.size.x,-obb2.size.y,-obb2.size.z }, worldMatrix[1]);//左下
+	point2[1] = Transform({ obb2.size.x,-obb2.size.y,-obb2.size.z }, worldMatrix[1]);//右下
+	point2[2] = Transform({ -obb2.size.x,obb2.size.y,-obb2.size.z }, worldMatrix[1]);//左上
+	point2[3] = Transform({ obb2.size.x,obb2.size.y,-obb2.size.z }, worldMatrix[1]);//右上
+
+	//奥
+	point2[4] = Transform({ -obb2.size.x,-obb2.size.y,+obb2.size.z }, worldMatrix[1]);//左下
+	point2[5] = Transform({ obb2.size.x,-obb2.size.y,+obb2.size.z }, worldMatrix[1]);//右下
+	point2[6] = Transform({ -obb2.size.x,obb2.size.y,+obb2.size.z }, worldMatrix[1]);//左上
+	point2[7] = Transform({ obb2.size.x,obb2.size.y,+obb2.size.z }, worldMatrix[1]);//右上
+	//ここまではきちんと、OBBの角に描画される事を確認
+
 
 
 
@@ -470,41 +507,42 @@ void Obb2NormalPlaneDraw(const OBB& obb1, const Matrix4x4& viewProjectionMatrix,
 	nomalPlan[0] = obb1.orientations[0];
 	nomalPlan[1] = obb1.orientations[1];
 	nomalPlan[2] = obb1.orientations[2];
+	nomalPlan[3] = obb2.orientations[0];
+	nomalPlan[4] = obb2.orientations[1];
+	nomalPlan[5] = obb2.orientations[2];
+	
 
 	Vector3 projectionPoint1[8];
+	Vector3 projectionPoint2[8];
 
 	//面法線に射影してる
 	for (int i = 0; i < 8; i++)
 	{
 		//Dot(各頂点,面法線の単位ベクトル)*面法線を単位ベクトルで射影ベクトルを出している
 		//演算子オーバーロードの関係で順番が入れ替わってるけど、掛け算なので問題ないはず
-		projectionPoint1[i] = Normalize(nomalPlan[planeNum]) * Dot(point1[i], Normalize(nomalPlan[planeNum]));
+		projectionPoint1[i] = Project(point1[i], nomalPlan[planeNum]);
+		projectionPoint2[i] = Project(point2[i], nomalPlan[planeNum]);
 	}
 	//スクリーン座標に変換
 	for (int i = 0; i < 8; i++)
 	{
 		projectionPoint1[i] = Transform(Transform(projectionPoint1[i], viewProjectionMatrix), viewportMatrix);
+		point1[i] = Transform(Transform(point1[i], viewProjectionMatrix), viewportMatrix);
+		projectionPoint2[i] = Transform(Transform(projectionPoint2[i], viewProjectionMatrix), viewportMatrix);
+		point2[i] = Transform(Transform(point2[i], viewProjectionMatrix), viewportMatrix);
 	}
-	Novice::DrawEllipse(int(projectionPoint1[0].x), int(projectionPoint1[0].y), 10, 10, 0, 0xff0000ff, kFillModeSolid);
-	Novice::DrawEllipse(int(projectionPoint1[1].x), int(projectionPoint1[1].y), 10, 10, 0, 0x00ff00ff, kFillModeSolid);
-	Novice::DrawEllipse(int(projectionPoint1[2].x), int(projectionPoint1[2].y), 10, 10, 0, 0x0000ffff, kFillModeSolid);
-	Novice::DrawEllipse(int(projectionPoint1[3].x), int(projectionPoint1[3].y), 10, 10, 0, 0xffff00ff, kFillModeSolid);
-	Novice::DrawEllipse(int(projectionPoint1[4].x), int(projectionPoint1[4].y), 10, 10, 0, 0x00ffffff, kFillModeSolid);
-	Novice::DrawEllipse(int(projectionPoint1[5].x), int(projectionPoint1[5].y), 10, 10, 0, 0xff00ffff, kFillModeSolid);
-	Novice::DrawEllipse(int(projectionPoint1[6].x), int(projectionPoint1[6].y), 10, 10, 0, 0x000000ff, kFillModeSolid);
-	Novice::DrawEllipse(int(projectionPoint1[7].x), int(projectionPoint1[7].y), 10, 10, 0, 0xffffffff, kFillModeSolid);
-	/*for (int i = 0; i < 8; i++)
-	{
 
-		if (i < 4)
-		{
-			
-		}
-		else
-		{
-			Novice::DrawEllipse(int(projectionPoint1[i].x), int(projectionPoint1[i].y), 10, 10, 0, 0x00ffff11, kFillModeSolid);
-		}
-	}*/
+	
+
+	for (int i = 0; i < 8; i++)
+	{
+		Novice::DrawEllipse(int(projectionPoint1[i].x), int(projectionPoint1[i].y), 10, 10, 0, RED, kFillModeSolid);
+		Novice::DrawEllipse(int(projectionPoint2[i].x), int(projectionPoint2[i].y), 10, 10, 0, BLUE, kFillModeSolid);
+
+		Novice::DrawLine(int(projectionPoint1[i].x), int(projectionPoint1[i].y), int(point1[i].x), int(point1[i].y), WHITE);
+		Novice::DrawLine(int(projectionPoint2[i].x), int(projectionPoint2[i].y), int(point2[i].x), int(point2[i].y), WHITE);
+	}
+	
 }
 
 

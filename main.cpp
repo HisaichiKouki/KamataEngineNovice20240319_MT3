@@ -37,12 +37,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		.size{0.5f,0.5f,0.5f}
 	};
 
-	Segment segment{
-		.origin{-0.8f,-0.3f,0.0f},
-		.diff{0.5f,0.5f,0.5f}
+	Vector3 rotate2{};
+	OBB obb2{
+		.center{1.0f,0.0f,0.0f },
+		.orientations = {{1.0f,0.0f,0.0f},
+		{0.0f,1.0f,0.0f},
+		{0.0f,0.0f,1.0f}},
+		.size{0.5f,0.5f,0.5f}
 	};
 
+
+
 	Matrix4x4 rotateMatrix;
+
+	//Matrix4x4 rotateMatrix;
+
 
 	// キー入力結果を受け取る箱
 	char keys[256] = { 0 };
@@ -74,6 +83,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		obb.orientations[2].x = rotateMatrix.m[2][0];
 		obb.orientations[2].y = rotateMatrix.m[2][1];
 		obb.orientations[2].z = rotateMatrix.m[2][2];
+
+		rotateMatrix = MakeRotateXYZMatrix(rotate2);
+		obb2.orientations[0].x = rotateMatrix.m[0][0];
+		obb2.orientations[0].y = rotateMatrix.m[0][1];
+		obb2.orientations[0].z = rotateMatrix.m[0][2];
+
+		obb2.orientations[1].x = rotateMatrix.m[1][0];
+		obb2.orientations[1].y = rotateMatrix.m[1][1];
+		obb2.orientations[1].z = rotateMatrix.m[1][2];
+
+		obb2.orientations[2].x = rotateMatrix.m[2][0];
+		obb2.orientations[2].y = rotateMatrix.m[2][1];
+		obb2.orientations[2].z = rotateMatrix.m[2][2];
 
 		//ReAABB(aabb1);
 
@@ -152,16 +174,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//DrawAABB(aabb1, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
 
 		DrawOBB(obb, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
+		DrawOBB(obb2, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
 		//OBBPointDraw(obb, camera->GetviewProjection(), camera->GetViewportMatrix());
-		Obb2NormalPlaneDraw(obb, camera->GetviewProjection(), camera->GetViewportMatrix(), 1);
-		if (OBB2Segment(obb, segment)) {
-			DrawSegment(segment, camera->GetviewProjection(), camera->GetViewportMatrix(), RED);
-		}
-		else
-		{
-			DrawSegment(segment, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
-
-		}
+		Obb2NormalPlaneDraw(obb,obb2, camera->GetviewProjection(), camera->GetViewportMatrix(), 4);
+		
 
 		/*DrawSegment(seg, camera->GetviewProjection(), camera->GetViewportMatrix(),WHITE);
 		if (AABB2Segment(aabb1,seg))
@@ -214,7 +230,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			ImGui::TreePop();
 		}
-		if (ImGui::TreeNode("segment"))
+		if (ImGui::TreeNode("OBB2"))
+		{
+
+			ImGui::DragFloat3("obb2.size", &obb2.size.x, 0.01f);
+			ImGui::DragFloat3("obb2.rotate", &rotate2.x, 0.01f);
+			ImGui::DragFloat3("obb2.center", &obb2.center.x, 0.01f);
+
+
+			ImGui::TreePop();
+		}
+		/*if (ImGui::TreeNode("segment"))
 		{
 
 
@@ -222,7 +248,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			ImGui::DragFloat3("segment.diff", &segment.diff.x, 0.01f);
 
 			ImGui::TreePop();
-		}
+		}*/
 		ImGui::End();
 		//DrawTriangle(triangle, camera->GetviewProjection(), camera->GetViewportMatrix(),WHITE);
 		//ImGui::Begin("Debug");
