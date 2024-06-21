@@ -109,7 +109,7 @@ bool IntersectsAABB(const AABB& aabb, const Segment& seg, float& tmin, float& tm
 
 	Vector3 tNear = { (std::min)(tMinX,tMaxX),(std::min)(tMinY,tMaxY),(std::min)(tMinZ,tMaxZ) };
 	Vector3 tFar = { (std::max)(tMinX,tMaxX),(std::max)(tMinY,tMaxY),(std::max)(tMinZ,tMaxZ) };
-	
+
 	tmin = (std::max)({ tNear.x, tNear.y, tNear.z });
 	tmax = (std::min)({ tFar.x, tFar.y, tFar.z });
 	//tmin = max(max(tNear.x, tNear.y), tNear.z);
@@ -119,7 +119,7 @@ bool IntersectsAABB(const AABB& aabb, const Segment& seg, float& tmin, float& tm
 	Novice::ScreenPrintf(0, 20, "tmax=%f", tmax);
 
 	return tmin <= tmax;
-	
+
 }
 
 bool AABB2Segment(const AABB& aabb, const Segment& seg)
@@ -141,7 +141,7 @@ bool AABB2Ray(const AABB& aabb, const Ray& ray)
 		return false;
 
 	return tmax >= 0.0f;
-	
+
 }
 
 bool AABB2Line(const AABB& aabb, const Line& line)
@@ -190,7 +190,7 @@ bool OBB2Sphere(const OBB& obb, const Sphere& sphere)
 	{
 		return true;
 	}
-	
+
 	return false;
 }
 
@@ -233,4 +233,94 @@ bool OBB2Segment(const OBB& obb, const Segment& segment)
 	return AABB2Segment(aabbObbLocal, localSeg);
 
 
+}
+
+bool Obb2Obb(const OBB& obb1, const OBB& obb2)
+{
+
+
+	//obb1
+	Matrix4x4 worldMatrix[2];
+	worldMatrix[0].m[0][0] = obb1.orientations[0].x;
+	worldMatrix[0].m[0][1] = obb1.orientations[0].y;
+	worldMatrix[0].m[0][2] = obb1.orientations[0].z;
+	worldMatrix[0].m[0][3] = 0;
+
+	worldMatrix[0].m[1][0] = obb1.orientations[1].x;
+	worldMatrix[0].m[1][1] = obb1.orientations[1].y;
+	worldMatrix[0].m[1][2] = obb1.orientations[1].z;
+	worldMatrix[0].m[1][3] = 0;
+
+	worldMatrix[0].m[2][0] = obb1.orientations[2].x;
+	worldMatrix[0].m[2][1] = obb1.orientations[2].y;
+	worldMatrix[0].m[2][2] = obb1.orientations[2].z;
+	worldMatrix[0].m[2][3] = 0;
+
+	worldMatrix[0].m[3][0] = obb1.center.x;
+	worldMatrix[0].m[3][1] = obb1.center.y;
+	worldMatrix[0].m[3][2] = obb1.center.z;
+	worldMatrix[0].m[3][3] = 1;
+
+	Vector3 point1[8]{};
+
+	//手前
+	point1[0] = Transform({ -obb1.size.x,-obb1.size.y,-obb1.size.z }, worldMatrix[0]);//左下
+	point1[1] = Transform({ obb1.size.x,-obb1.size.y,-obb1.size.z }, worldMatrix[0]);//右下
+	point1[2] = Transform({ -obb1.size.x,obb1.size.y,-obb1.size.z }, worldMatrix[0]);//左上
+	point1[3] = Transform({ obb1.size.x,obb1.size.y,-obb1.size.z }, worldMatrix[0]);//右上
+
+	//奥
+	point1[4] = Transform({ -obb1.size.x,-obb1.size.y,+obb1.size.z }, worldMatrix[0]);//左下
+	point1[5] = Transform({ obb1.size.x,-obb1.size.y,+obb1.size.z }, worldMatrix[0]);//右下
+	point1[6] = Transform({ -obb1.size.x,obb1.size.y,+obb1.size.z }, worldMatrix[0]);//左上
+	point1[7] = Transform({ obb1.size.x,obb1.size.y,+obb1.size.z }, worldMatrix[0]);//右上
+
+	//obb2
+	worldMatrix[1].m[0][0] = obb2.orientations[0].x;
+	worldMatrix[1].m[0][1] = obb2.orientations[0].y;
+	worldMatrix[1].m[0][2] = obb2.orientations[0].z;
+	worldMatrix[1].m[0][3] = 0;
+
+	worldMatrix[1].m[1][0] = obb2.orientations[1].x;
+	worldMatrix[1].m[1][1] = obb2.orientations[1].y;
+	worldMatrix[1].m[1][2] = obb2.orientations[1].z;
+	worldMatrix[1].m[1][3] = 0;
+
+	worldMatrix[1].m[2][0] = obb2.orientations[2].x;
+	worldMatrix[1].m[2][1] = obb2.orientations[2].y;
+	worldMatrix[1].m[2][2] = obb2.orientations[2].z;
+	worldMatrix[1].m[2][3] = 0;
+
+	worldMatrix[1].m[3][0] = obb2.center.x;
+	worldMatrix[1].m[3][1] = obb2.center.y;
+	worldMatrix[1].m[3][2] = obb2.center.z;
+	worldMatrix[1].m[3][3] = 1;
+
+	Vector3 point2[8]{};
+
+	//手前
+	point2[0] = Transform({ -obb2.size.x,-obb2.size.y,-obb2.size.z }, worldMatrix[1]);//左下
+	point2[1] = Transform({ obb2.size.x,-obb2.size.y,-obb2.size.z }, worldMatrix[1]);//右下
+	point2[2] = Transform({ -obb2.size.x,obb2.size.y,-obb2.size.z }, worldMatrix[1]);//左上
+	point2[3] = Transform({ obb2.size.x,obb2.size.y,-obb2.size.z }, worldMatrix[1]);//右上
+
+	//奥
+	point2[4] = Transform({ -obb2.size.x,-obb2.size.y,+obb2.size.z }, worldMatrix[1]);//左下
+	point2[5] = Transform({ obb2.size.x,-obb2.size.y,+obb2.size.z }, worldMatrix[1]);//右下
+	point2[6] = Transform({ -obb2.size.x,obb2.size.y,+obb2.size.z }, worldMatrix[1]);//左上
+	point2[7] = Transform({ obb2.size.x,obb2.size.y,+obb2.size.z }, worldMatrix[1]);//右上
+
+	Vector3 nomalPlan[6];
+	nomalPlan[0] = obb1.orientations[0];
+	nomalPlan[1] = obb1.orientations[0];
+	nomalPlan[2] = obb1.orientations[0];
+
+	Vector3 projectionPoint1[8];
+
+	for (int i = 0; i < 8; i++)
+	{
+		projectionPoint1[i] = Normalize(nomalPlan[0])* Dot(point1[i], Normalize(nomalPlan[0]));
+	}
+
+	return false;
 }

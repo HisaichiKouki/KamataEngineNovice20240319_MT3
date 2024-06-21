@@ -22,3 +22,6 @@ void ReAABB( AABB &aabb);
 
 void DrawOBB(const OBB& obb, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
 
+void OBBPointDraw(const OBB& obb, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix);
+
+void Obb2NormalPlaneDraw(const OBB& obb1, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix,int planeNum);

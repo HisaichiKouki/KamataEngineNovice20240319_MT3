@@ -152,7 +152,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//DrawAABB(aabb1, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
 
 		DrawOBB(obb, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
-
+		//OBBPointDraw(obb, camera->GetviewProjection(), camera->GetViewportMatrix());
+		Obb2NormalPlaneDraw(obb, camera->GetviewProjection(), camera->GetViewportMatrix(), 1);
 		if (OBB2Segment(obb, segment)) {
 			DrawSegment(segment, camera->GetviewProjection(), camera->GetViewportMatrix(), RED);
 		}

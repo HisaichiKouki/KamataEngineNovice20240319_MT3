@@ -26,3 +26,5 @@ bool AABB2Line(const AABB& aabb, const Line& line);
 bool OBB2Sphere(const OBB& obb, const Sphere& sphere);
 
 bool OBB2Segment(const OBB& obb, const Segment& segment);
+
+bool Obb2Obb(const OBB& obb1, const OBB& obb2);
