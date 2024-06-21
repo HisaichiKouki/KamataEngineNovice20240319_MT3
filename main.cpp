@@ -34,16 +34,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		.orientations = {{1.0f,0.0f,0.0f},
 		{0.0f,1.0f,0.0f},
 		{0.0f,0.0f,1.0f}},
-		.size{0.5f,0.5f,0.5f}
+		.size{0.83f,0.26f,0.24f}
 	};
 
-	Vector3 rotate2{};
+	Vector3 rotate2{ -0.5f,-2.49f,0.15f };
 	OBB obb2{
-		.center{1.0f,0.0f,0.0f },
+		.center{0.9f,0.66f,0.78f },
 		.orientations = {{1.0f,0.0f,0.0f},
 		{0.0f,1.0f,0.0f},
 		{0.0f,0.0f,1.0f}},
-		.size{0.5f,0.5f,0.5f}
+		.size{0.5f,0.37f,0.5f}
 	};
 
 
@@ -173,12 +173,25 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		DrawGridLine(camera->GetviewProjection(), camera->GetViewportMatrix());
 		//DrawAABB(aabb1, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
 
-		DrawOBB(obb, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
+		if (Obb2Obb(obb,obb2))
+		{
+			DrawOBB(obb, camera->GetviewProjection(), camera->GetViewportMatrix(), RED);
+		}
+		else
+		{
+			DrawOBB(obb, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
+		}
+		
 		DrawOBB(obb2, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
 		//OBBPointDraw(obb, camera->GetviewProjection(), camera->GetViewportMatrix());
-		Obb2NormalPlaneDraw(obb,obb2, camera->GetviewProjection(), camera->GetViewportMatrix(), 4);
-		
 
+		/*for (int i = 0; i < 1; i++)
+		{
+			
+
+		}
+		
+		Obb2NormalPlaneDraw(obb, obb2, camera->GetviewProjection(), camera->GetViewportMatrix(), 4);*/
 		/*DrawSegment(seg, camera->GetviewProjection(), camera->GetViewportMatrix(),WHITE);
 		if (AABB2Segment(aabb1,seg))
 		{

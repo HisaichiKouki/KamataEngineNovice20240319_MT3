@@ -330,13 +330,10 @@ bool Obb2Obb(const OBB& obb1, const OBB& obb2)
 	float length1[8];
 	float length2[8];
 
-	bool normalHit[6];
 
-	float sumSpan;
-	float longSpnan;
 	//面法線の当たり判定
 	//面法線に射影してる
-	
+
 	for (int j = 0; j < 6; j++)
 	{
 		for (int i = 0; i < 8; i++)
@@ -345,32 +342,158 @@ bool Obb2Obb(const OBB& obb1, const OBB& obb2)
 			//演算子オーバーロードの関係で順番が入れ替わってるけど、掛け算なので問題ないはず
 			projectionPoint1[i] = Project(point1[i], nomalPlan[j]);
 			projectionPoint2[i] = Project(point2[i], nomalPlan[j]);
-			length1[i] = Length(projectionPoint1[i]);
-			length2[i] = Length(projectionPoint2[i]);
-			
+
+
+			/*if (i==0||i==3)
+			{
+				length1[i] = projectionPoint1[i].x;
+			}
+			if (i == 1 || i == 4)
+			{
+				length1[i] = projectionPoint1[i].y;
+			}
+			if (i == 2 || i == 5)
+			{
+				length1[i] = projectionPoint1[i].z;
+			}*/
+			/*length1[i] = Length(projectionPoint1[i]);
+			length2[i] = Length(projectionPoint2[i]);*/
+
+		}
+		if (j == 0 || j == 3)
+		{
+			length1[j] = projectionPoint1[j].x;
+			length2[j] = projectionPoint2[j].x;
+		}
+		if (j == 1 || j == 4)
+		{
+			length1[j] = projectionPoint1[j].y;
+			length2[j] = projectionPoint1[j].y;
+		}
+		if (j == 2 || j == 5)
+		{
+			length1[j] = projectionPoint1[j].z;
+			length2[j] = projectionPoint2[j].z;
 		}
 
 
-		float max1 = length1[0];
-		float min1 = length1[0];
-		float max2 = length2[0];
-		float min2 = length2[0];
+		float max1 = -1000000;
+		float min1 =1000000;
+		float max2 = -10000000;
+		float min2 = 100000000;
 
-		for (int i = 1; i < 8; i++)
+		//法線に向かってでた点からminmaxを出す
+		/*for (int i = 1; i < 8; i++)
 		{
 			if (max1 < length1[i]) { max1 = length1[i]; }
 			if (min1 > length1[i]) { min1 = length1[i]; }
 
 			if (max2 < length2[i]) { max2 = length2[i]; }
 			if (min2 > length2[i]) { min2 = length2[i]; }
+		}*/
+		for (int i = 0; i < 8; i++)
+		{
+			if (j == 0 || j == 3)
+			{
+				if (max1 < projectionPoint1[i].x) { max1 = projectionPoint1[i].x; }
+				if (min1 > projectionPoint1[i].x) { min1 = projectionPoint1[i].x; }
+
+				if (max2 < projectionPoint2[i].x) { max2 = projectionPoint2[i].x; }
+				if (min2 > projectionPoint2[i].x) { min2 = projectionPoint2[i].x; }
+			}
+			if (j == 1 || j == 4)
+			{
+				if (max1 < projectionPoint1[i].y) { max1 = projectionPoint1[i].y; }
+				if (min1 > projectionPoint1[i].y) { min1 = projectionPoint1[i].y; }
+
+				if (max2 < projectionPoint2[i].y) { max2 = projectionPoint2[i].y; }
+				if (min2 > projectionPoint2[i].y) { min2 = projectionPoint2[i].y; }
+			}
+			if (j == 2 || j == 5)
+			{
+				if (max1 < projectionPoint1[i].z) { max1 = projectionPoint1[i].z; }
+				if (min1 > projectionPoint1[i].z) { min1 = projectionPoint1[i].z; }
+
+				if (max2 < projectionPoint2[i].z) { max2 = projectionPoint2[i].z; }
+				if (min2 > projectionPoint2[i].z) { min2 = projectionPoint2[i].z; }
+			}
 		}
-	}
 		
 
-	for (int i = 0; i < 8; i++)
-	{
+		float sumSpan = (max1 - min1) + (max2 - min2);
+		float longSpnan = (std::max)(max1, max2) - (std::min)(min1, min2);
+
+		/*Novice::ScreenPrintf(0, j * 20, "%d min1=%f max1=%f", j, min1, max1);
+		Novice::ScreenPrintf(400, j * 20, "%d min2=%f max2=%f", j, min2, max2);
+
+		Novice::ScreenPrintf(0, 300 + j * 40, "%d sum=%f", j, sumSpan);
+		Novice::ScreenPrintf(0, 320 + j * 40, "%d lon=%f", j, longSpnan);*/
+		if (sumSpan < longSpnan)
+		{
+			return false;
+		}
+
+
 
 	}
-	
-	return false;
+
+	//Vector3 crossVector[9];
+
+	//crossVector[0] = Cross(nomalPlan[0], nomalPlan[3]);
+	//crossVector[1] = Cross(nomalPlan[0], nomalPlan[4]);
+	//crossVector[2] = Cross(nomalPlan[0], nomalPlan[5]);
+	//crossVector[3] = Cross(nomalPlan[1], nomalPlan[3]);
+	//crossVector[4] = Cross(nomalPlan[1], nomalPlan[4]);
+	//crossVector[5] = Cross(nomalPlan[1], nomalPlan[5]);
+	//crossVector[6] = Cross(nomalPlan[2], nomalPlan[3]);
+	//crossVector[7] = Cross(nomalPlan[2], nomalPlan[4]);
+	//crossVector[8] = Cross(nomalPlan[2], nomalPlan[5]);
+	//for (int j = 0; j < 9; j++)
+	//{
+	//	Novice::ScreenPrintf(0, j * 20, "crossVec%d= x%0.4f y%0.4f z%0.4f", j, crossVector[j].x, crossVector[j].y, crossVector[j].z);
+	//	for (int i = 0; i < 8; i++)
+	//	{
+	//		//Dot(各頂点,面法線の単位ベクトル)*面法線を単位ベクトルで射影ベクトルを出している
+	//		//演算子オーバーロードの関係で順番が入れ替わってるけど、掛け算なので問題ないはず
+	//		projectionPoint1[i] = Project(point1[i], crossVector[j]);
+	//		projectionPoint2[i] = Project(point2[i], crossVector[j]);
+	//		length1[i] = Length(projectionPoint1[i]);
+	//		length2[i] = Length(projectionPoint2[i]);
+
+	//	}
+
+
+	//	float max1 = length1[0];
+	//	float min1 = length1[0];
+	//	float max2 = length2[0];
+	//	float min2 = length2[0];
+
+	//	//法線に向かってでた点からminmaxを出す
+	//	for (int i = 1; i < 8; i++)
+	//	{
+	//		if (max1 < length1[i]) { max1 = length1[i]; }
+	//		if (min1 > length1[i]) { min1 = length1[i]; }
+
+	//		if (max2 < length2[i]) { max2 = length2[i]; }
+	//		if (min2 > length2[i]) { min2 = length2[i]; }
+	//	}
+
+	//	float sumSpan = (max1 - min1) + (max2 - min2);
+	//	float longSpnan = (std::max)(max1, max2) - (std::min)(min1, min2);
+
+	//	/*Novice::ScreenPrintf(0, j * 20, "%d min1=%f max1=%f", j, min1, max1);
+	//	Novice::ScreenPrintf(400, j * 20, "%d min2=%f max2=%f", j, min2, max2);
+
+	//	Novice::ScreenPrintf(0, 300 + j * 40, "%d sum=%f", j,sumSpan);
+	//	Novice::ScreenPrintf(0, 320 + j * 40, "%d lon=%f", j,longSpnan);*/
+	//	if (sumSpan < longSpnan)
+	//	{
+	//		return false;
+	//	}
+
+
+
+	//}
+
+	return true;
 }

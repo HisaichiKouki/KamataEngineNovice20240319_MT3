@@ -52,7 +52,7 @@ void DrawGridLine(const Matrix4x4& viewProjectionMat, const Matrix4x4& viewportM
 
 	Novice::DrawEllipse(
 		int(originScreen.x), int(originScreen.y),
-		int(10), int(10), 0.0f, 0xffff00ff, kFillModeSolid);
+		int(10), int(10), 0.0f, 0x000000ff, kFillModeSolid);
 
 
 }
@@ -534,15 +534,22 @@ void Obb2NormalPlaneDraw(const OBB& obb1, const OBB& obb2, const Matrix4x4& view
 
 	
 
-	for (int i = 0; i < 8; i++)
+	for (int i = 0; i < 4; i++)
 	{
-		Novice::DrawEllipse(int(projectionPoint1[i].x), int(projectionPoint1[i].y), 10, 10, 0, RED, kFillModeSolid);
-		Novice::DrawEllipse(int(projectionPoint2[i].x), int(projectionPoint2[i].y), 10, 10, 0, BLUE, kFillModeSolid);
+		Novice::DrawEllipse(int(projectionPoint1[i].x), int(projectionPoint1[i].y), 10, 10, 0, 0xff000033, kFillModeSolid);
+		//Novice::DrawEllipse(int(projectionPoint2[i].x), int(projectionPoint2[i].y), 10, 10, 0, 0x0000ff33, kFillModeSolid);
 
-		Novice::DrawLine(int(projectionPoint1[i].x), int(projectionPoint1[i].y), int(point1[i].x), int(point1[i].y), WHITE);
-		Novice::DrawLine(int(projectionPoint2[i].x), int(projectionPoint2[i].y), int(point2[i].x), int(point2[i].y), WHITE);
+		Novice::DrawLine(int(projectionPoint1[i].x), int(projectionPoint1[i].y), int(point1[i].x), int(point1[i].y), 0xff000033);
+		//Novice::DrawLine(int(projectionPoint2[i].x), int(projectionPoint2[i].y), int(point2[i].x), int(point2[i].y), 0x0000ff33);
 	}
-	
+	for (int i = 4; i < 8; i++)
+	{
+		Novice::DrawEllipse(int(projectionPoint1[i].x), int(projectionPoint1[i].y), 10, 10, 0, 0xffff0033, kFillModeSolid);
+		//Novice::DrawEllipse(int(projectionPoint2[i].x), int(projectionPoint2[i].y), 10, 10, 0, 0xff00ff33, kFillModeSolid);
+
+		Novice::DrawLine(int(projectionPoint1[i].x), int(projectionPoint1[i].y), int(point1[i].x), int(point1[i].y), 0xffff0033);
+		//Novice::DrawLine(int(projectionPoint2[i].x), int(projectionPoint2[i].y), int(point2[i].x), int(point2[i].y), 0xff00ff33);
+	}
 }
 
 
