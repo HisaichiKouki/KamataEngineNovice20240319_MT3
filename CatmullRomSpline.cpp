@@ -20,38 +20,41 @@ void CatmullRomSpline::Init()
 		{1,1,0},
 		{1,1.5f,0},
 		{2,1.5f,0},
-		{2,0,0}
-	
+		{2,0,0},
+		{3,0,0},
+		{5,0,0},
+
 	};
 }
 
 void CatmullRomSpline::Draw()
 {
-
 	for (size_t i = 0; i < segmentCount_; i++)
 	{
 		float t = 1.0f / segmentCount_ * i;
 		Vector3 pos = CatmullRomPosition(controlPoints_, t);
 		pointsDrawing_.push_back(pos);
 	}
-
 	for (size_t i = 0; i < segmentCount_ - 1; i++)
 	{
 		PrimitiveDrawer::GetInstance()->DrawLine3d(pointsDrawing_[i], pointsDrawing_[i + 1], { 1.0f,1.0f,1.0f,1.0f });
 	}
-
 }
 
 void CatmullRomSpline::NoviceDraw(const Matrix4x4& viewProjectionMat, const Matrix4x4& viewportMat, uint32_t color)
 {
-	
-
-	for (size_t i = 0; i < segmentCount_; i++)
+	float t = 0;
+	pointsDrawing_.clear();
+	for (size_t i = 0; i <= segmentCount_ ; i++)
 	{
-		float t = 1.0f / segmentCount_ * i;
+		
+		//t = ((float)i / segmentCount_);
 		Vector3 pos = CatmullRomPosition(controlPoints_, t);
 		pointsDrawing_.push_back(pos);
-	
+		Novice::ScreenPrintf(100, (int)i * 20, "t=%f", t);
+
+		
+		t += (1.0f / segmentCount_);
 	}
 
 	for (size_t i = 0; i < segmentCount_ - 1; i++)
@@ -64,7 +67,7 @@ void CatmullRomSpline::NoviceDraw(const Matrix4x4& viewProjectionMat, const Matr
 
 		Novice::DrawLine((int)start.x, (int)start.y, (int)end.x, (int)end.y, color);
 	}
-	pointsDrawing_.clear();
+
 }
 
 void CatmullRomSpline::Debug(const Matrix4x4& viewProjectionMat, const Matrix4x4& viewportMat, uint32_t color)
@@ -88,14 +91,21 @@ void CatmullRomSpline::Debug(const Matrix4x4& viewProjectionMat, const Matrix4x4
 	{
 		sphere.center = controlPoints_[i];
 		DrawGridSphere(sphere, 3, viewProjectionMat, viewportMat, color);
-		
+
 		std::string label = "Point [" + std::to_string(i) + "]";
-		ImGui::DragFloat3(label.c_str(), &controlPoints_[i].x, 0.03f); 
+		ImGui::DragFloat3(label.c_str(), &controlPoints_[i].x, 0.03f);
 		//ImGui::DragFloat3("controlPoint", &controlPoints_[i].x, 0.03f);
-		
+
 	}
-	
 	ImGui::End();
-	
+
+	/*ImGui::End();
+	ImGui::Begin("Spline");
+	for (size_t i = 0; i < pointsDrawing_.size(); i++)
+	{
+		ImGui::DragFloat3("pointsDrawing", &pointsDrawing_[i].x, 0.03f);
+
+	}
+	ImGui::End();*/
 }
 

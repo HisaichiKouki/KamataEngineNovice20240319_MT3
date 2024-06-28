@@ -23,20 +23,21 @@ Vector3 CatmullRomPosition(const std::vector<Vector3>& points, float t)
 	//1区間の長さ
 	float areaWidth = 1.0f / division;
 	//区間内の始点を0.0f,終点を1.0fとしたときの現在位置
-	float t_2 = std::fmod(t, areaWidth) * division;
+	float t_2 = std::fmod(t, areaWidth) * (division);
 	t_2 = std::clamp(t_2, 0.0f, 1.0f);
 
 	size_t index = static_cast<size_t>(t / areaWidth);
-	index = std::clamp(index, static_cast < size_t>(0), static_cast<size_t>(division));
+	//区画番号が上限を超えないようにする
+	index = std::clamp(index, static_cast <size_t>(0), static_cast<size_t>(points.size() - 2));
 	size_t index0 = index - 1;
-	size_t index1 = index ;
+	size_t index1 = index;
 	size_t index2 = index + 1;
 	size_t index3 = index + 2;
 
 	if (index == 0) {
 		index0 = index1;
 	}
-	if (index3>=points.size())
+	if (index3 >= points.size())
 	{
 		index3 = index2;
 	}
