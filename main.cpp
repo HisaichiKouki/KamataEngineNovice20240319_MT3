@@ -10,7 +10,7 @@
 #include <stdlib.h>
 
 #include "CatmullRomSpline.h"
-#include "CatmullRomSpline.h"
+
 const char kWindowTitle[] = "LD2A_01_ヒサイチ_コウキ";
 
 // Windowsアプリでのエントリーポイント(main関数)
@@ -47,7 +47,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		
 		camera->Update();
 
-		
+
 
 
 		///------------------///
@@ -59,6 +59,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///------------------///
 		DrawGridLine(camera->GetviewProjection(), camera->GetViewportMatrix());
 		//DrawAABB(aabb1, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
+		spline->Debug(camera->GetviewProjection(), camera->GetViewportMatrix(), BLACK);
 
 		spline->NoviceDraw(camera->GetviewProjection(), camera->GetViewportMatrix(),BLACK);
 		camera->DebugDraw();

@@ -10,3 +10,5 @@ Vector3 CatmullRomInterpolation(
 );
 
 Vector3 CatmullRomPosition(const std::vector<Vector3>& points, float t);
+
+
