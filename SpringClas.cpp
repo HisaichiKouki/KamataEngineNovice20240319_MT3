@@ -8,13 +8,13 @@ SpringClas::SpringClas()
 void SpringClas::Init()
 {
 	ball = {
-		.position{1.2f,0.5f,0.0f},
+		.position{1.2f,0.0f,0.0f},
 		.mass{2.0f},
 		.radius{0.05f},
 		.color{BLUE}
 	};
 	spring = {
-		.anchor = {0.0f,1.5f,0.0f},
+		.anchor = {0.0f,0.0f,0.0f},
 		.naturalLength{1.0f},
 		.stiffness{100.0f},
 		.dampingCoefficient{2.0f}
