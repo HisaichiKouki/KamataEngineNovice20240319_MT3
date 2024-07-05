@@ -28,6 +28,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	std::unique_ptr<SpringClas>spring_;
 	spring_ = std::make_unique<SpringClas>();
 	
+	bool start=false;
 
 	// キー入力結果を受け取る箱
 	char keys[256] = { 0 };
@@ -49,7 +50,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		
 		camera->Update();
-		spring_->Update();
+		if (InputManager::GetIsPressKey(DIK_SPACE))
+		{
+			start = true;
+		}
+		if (start)
+		{
+			spring_->Update();
+
+		}
 
 
 
@@ -66,7 +75,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		spring_->Draw(camera->GetviewProjection(), camera->GetViewportMatrix());
 		camera->DebugDraw();
-		
+		Novice::ScreenPrintf(100, 100, "Space start");
 
 		//DrawAxis(spher.worldMatrix, viewProjection, viewportMatrix);
 		///------------------///
