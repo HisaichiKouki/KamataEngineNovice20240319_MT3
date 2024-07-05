@@ -10,6 +10,7 @@
 #include <stdlib.h>
 
 #include "CatmullRomSpline.h"
+#include "Bezier.h"
 
 const char kWindowTitle[] = "LD2A_01_ヒサイチ_コウキ";
 
@@ -23,8 +24,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	Camera* camera = new Camera;
 	
-	CatmullRomSpline* spline = new CatmullRomSpline();
-	
+	//CatmullRomSpline* spline = new CatmullRomSpline();
+	Vector3 controlPoint[3]{
+		{-0.8f,0.58f,1.0f},
+		{1.76f,1.0f,-0.3f},
+		{0.94f,-0.7f,2.3f}
+	};
 
 	// キー入力結果を受け取る箱
 	char keys[256] = { 0 };
@@ -59,11 +64,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///------------------///
 		DrawGridLine(camera->GetviewProjection(), camera->GetViewportMatrix());
 		//DrawAABB(aabb1, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
-		spline->Debug(camera->GetviewProjection(), camera->GetViewportMatrix(), BLACK);
-
-		spline->NoviceDraw(camera->GetviewProjection(), camera->GetViewportMatrix(),BLACK);
+		//spline->Debug(camera->GetviewProjection(), camera->GetViewportMatrix(), BLACK);
+		DrawBezier(controlPoint[0], controlPoint[1], controlPoint[2], camera->GetviewProjection(), camera->GetViewportMatrix(), BLUE);
+		DebugBezier(controlPoint[0], controlPoint[1], controlPoint[2], camera->GetviewProjection(), camera->GetViewportMatrix(), BLACK);
+		//spline->NoviceDraw(camera->GetviewProjection(), camera->GetViewportMatrix(),BLACK);
 		camera->DebugDraw();
 		
+		ImGui::Begin("Bezier");
+		for (int i = 0; i < 3; i++)
+		{
+			
+			std::string label = "Point [" + std::to_string(i) + "]";
+			ImGui::DragFloat3(label.c_str(), &controlPoint[i].x, 0.03f);
+			//ImGui::DragFloat3("controlPoint", &controlPoints_[i].x, 0.03f);
+
+		}
+		ImGui::End();
 
 		//DrawAxis(spher.worldMatrix, viewProjection, viewportMatrix);
 		///------------------///
