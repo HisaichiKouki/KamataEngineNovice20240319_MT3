@@ -64,3 +64,11 @@ void SpringClas::Draw(const Matrix4x4& viewProjectionMat, const Matrix4x4& viewp
 
 	DrawGridSphere(ballSphere, 8, viewProjectionMat, viewportMat, BLUE);
 }
+
+void SpringClas::Debug()
+{
+	ImGui::Begin("Spring");
+	ImGui::DragFloat3("anchor", &spring.anchor.x, 0.1f);
+
+	ImGui::End();
+}
