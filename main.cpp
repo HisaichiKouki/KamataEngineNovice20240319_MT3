@@ -56,9 +56,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	for (int i = 0; i < 3; i++)
 	{
-		/*sphere[i].center.x = worldMatrixes[i].m[3][0];
+		sphere[i].center.x = worldMatrixes[i].m[3][0];
 		sphere[i].center.y = worldMatrixes[i].m[3][1];
-		sphere[i].center.z = worldMatrixes[i].m[3][2];*/
+		sphere[i].center.z = worldMatrixes[i].m[3][2];
 		sphere[i].radius = 0.1f;
 	}
 	// キー入力結果を受け取る箱
@@ -86,12 +86,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		calculationMat = MakeAffineMatrix(scales[2], rotates[2], translates[2]);
 		worldMatrixes[2] = Multiply(calculationMat, worldMatrixes[1]);
-	/*	for (int i = 0; i < 3; i++)
+		for (int i = 0; i < 3; i++)
 		{
 			sphere[i].center.x = worldMatrixes[i].m[3][0];
 			sphere[i].center.y = worldMatrixes[i].m[3][1];
 			sphere[i].center.z = worldMatrixes[i].m[3][2];
-		}*/
+		}
 		camera->Update();
 
 
@@ -106,7 +106,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///------------------///
 		DrawGridLine(camera->GetviewProjection(), camera->GetViewportMatrix());
 
-		DrawGridSphere(sphere[0], 8, Multiply( worldMatrixes[0], camera->GetviewProjection()), camera->GetViewportMatrix(), RED);
+		DrawGridSphere(sphere[0], 8,camera->GetviewProjection(), camera->GetViewportMatrix(), RED);
 		DrawGridSphere(sphere[1], 8, camera->GetviewProjection(), camera->GetViewportMatrix(), GREEN);
 		DrawGridSphere(sphere[2], 8, camera->GetviewProjection(), camera->GetViewportMatrix(), BLUE);
 		DrawLine3D(sphere[0].center, sphere[1].center, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
