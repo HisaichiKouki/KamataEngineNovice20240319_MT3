@@ -5,6 +5,7 @@
 #include<cmath>
 
 
+
 static const int kColumWidth = 60;
 static const int kRowHeight = 20;
 
@@ -15,6 +16,8 @@ static const int kRowHeight = 20;
 /// <param name="b"></param>
 /// <returns></returns>
 float cotf(float a);
+
+
 
 //Vector3Math
 void VectorScreenPrintf(int x, int y, const Vector3& vector, const char* label);
@@ -69,3 +72,18 @@ Matrix4x4 MakeOrthographicMatrix(float left, float top, float right, float botto
 Matrix4x4 MakeViewportMatrix(float left, float top, float width, float height, float minDepth, float maxDepth);
 
 Vector3 TransformNomal(const Vector3& v, const Matrix4x4& m);
+
+
+//Matrix4x4 operator+ (const Matrix4x4& m1, const Matrix4x4& m2) {
+//	Matrix4x4 resultMatrix = {};
+//	for (int row = 0; row < 4; row++)
+//	{
+//		for (int col = 0; col < 4; col++)
+//		{
+//			resultMatrix.m[row][col] = m1.m[row][col] + m2.m[row][col];
+//
+//		}
+//	}
+//	return resultMatrix;
+//}
+//Matrix4x4 operator- (const Matrix4x4& m1, const Matrix4x4& m2) { return Subtract(m1, m2); }

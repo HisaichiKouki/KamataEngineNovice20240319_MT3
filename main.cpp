@@ -13,6 +13,7 @@
 #include "Bezier.h"
 
 const char kWindowTitle[] = "LD2A_01_ヒサイチ_コウキ";
+Matrix4x4 operator* (const Matrix4x4& m1, const Matrix4x4& m2) { return Multiply(m1, m2); }
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -24,43 +25,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	Camera* camera = new Camera;
 
-	Vector3 translates[3]{
-		{0.2f,1.0f,0.0f},
-		{0.4f,0.0f,0.0f},
-		{0.3f,0.0f,0.0f}
-	};
-	Vector3 rotates[3]{
-		{0.0f,0.0f,-6.8f},
-		{0.0f,0.0f,-1.4f},
-		{0.0f,0.0f,0.0f},
-	};
-	Vector3 scales[3]{
-		{1.0f,1.0f,1.0f},
-		{1.0f,1.0f,1.0f},
-		{1.0f,1.0f,1.0f},
-	};
+	Vector3 a{ 0.2f,1.0f,0.0f };
+	Vector3 b{ 2.4f,3.1f,1.2f };
+	Vector3 c = a + b;
+	Vector3 d = a - b;
+	Vector3 e = a * 2.4f;
+	Vector3 rotate{ 0.4f,1.43f,-0.8f };
+	Matrix4x4 rotateXMat = MakeRotateXMatrix(rotate.x);
+	Matrix4x4 rotateYMat = MakeRotateYMatrix(rotate.y);
+	Matrix4x4 rotateZMat = MakeRotateZMatrix(rotate.z);
+	//Matrix4x4 rotateMat = Add(rotateXMat,rotateYMat);
+	Matrix4x4 rotateMat = rotateXMat * rotateYMat * rotateZMat;
 
-	Matrix4x4 worldMatrixes[3];
-	Matrix4x4 calculationMat;
-
-
-	worldMatrixes[0] = MakeAffineMatrix(scales[0], rotates[0], translates[0]);
-
-	calculationMat = MakeAffineMatrix(scales[1], rotates[1], translates[1]);
-	worldMatrixes[1] = Multiply(calculationMat, worldMatrixes[0]);
-
-	calculationMat = MakeAffineMatrix(scales[2], rotates[2], translates[2]);
-	worldMatrixes[2] = Multiply(calculationMat, worldMatrixes[1]);
-
-	Sphere sphere[3];
-
-	for (int i = 0; i < 3; i++)
-	{
-		sphere[i].center.x = worldMatrixes[i].m[3][0];
-		sphere[i].center.y = worldMatrixes[i].m[3][1];
-		sphere[i].center.z = worldMatrixes[i].m[3][2];
-		sphere[i].radius = 0.1f;
-	}
 	// キー入力結果を受け取る箱
 	char keys[256] = { 0 };
 	char preKeys[256] = { 0 };
@@ -79,19 +55,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///------------------///
 
-		worldMatrixes[0] = MakeAffineMatrix(scales[0], rotates[0], translates[0]);
 
-		calculationMat = MakeAffineMatrix(scales[1], rotates[1], translates[1]);
-		worldMatrixes[1] = Multiply(calculationMat, worldMatrixes[0]);
-
-		calculationMat = MakeAffineMatrix(scales[2], rotates[2], translates[2]);
-		worldMatrixes[2] = Multiply(calculationMat, worldMatrixes[1]);
-		for (int i = 0; i < 3; i++)
-		{
-			sphere[i].center.x = worldMatrixes[i].m[3][0];
-			sphere[i].center.y = worldMatrixes[i].m[3][1];
-			sphere[i].center.z = worldMatrixes[i].m[3][2];
-		}
 		camera->Update();
 
 
@@ -106,23 +70,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///------------------///
 		DrawGridLine(camera->GetviewProjection(), camera->GetViewportMatrix());
 
-		DrawGridSphere(sphere[0], 8,camera->GetviewProjection(), camera->GetViewportMatrix(), RED);
-		DrawGridSphere(sphere[1], 8, camera->GetviewProjection(), camera->GetViewportMatrix(), GREEN);
-		DrawGridSphere(sphere[2], 8, camera->GetviewProjection(), camera->GetViewportMatrix(), BLUE);
-		DrawLine3D(sphere[0].center, sphere[1].center, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
-		DrawLine3D(sphere[1].center, sphere[2].center, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
+
 		camera->DebugDraw();
 
-		ImGui::Begin("Debug");
-		for (int i = 0; i < 3; i++)
-		{
-			std::string scale = "scale [" + std::to_string(i) + "]";
-			ImGui::DragFloat3(scale.c_str(), &scales[i].x, 0.03f);
-			std::string rotata = "rotate [" + std::to_string(i) + "]";
-			ImGui::DragFloat3(rotata.c_str(), &rotates[i].x, 0.03f);
-			std::string translate = "translate [" + std::to_string(i) + "]";
-			ImGui::DragFloat3(translate.c_str(), &translates[i].x, 0.03f);
-		}
+		ImGui::Begin("Window");
+		ImGui::Text("c:%f,%f,%f,", c.x, c.y, c.z);
+		ImGui::Text("d:%f,%f,%f,", d.x, d.y, d.z);
+		ImGui::Text("e:%f,%f,%f,", e.x, e.y, e.z);
+		ImGui::Text("matrix:\n%f,%f,%f,%f\n%f,%f,%f,%f\n%f,%f,%f,%f\n%f,%f,%f,%f",
+			rotateMat.m[0][0], rotateMat.m[0][1], rotateMat.m[0][2], rotateMat.m[0][3],
+			rotateMat.m[1][0], rotateMat.m[1][1], rotateMat.m[1][2], rotateMat.m[1][3],
+			rotateMat.m[2][0], rotateMat.m[2][1], rotateMat.m[2][2], rotateMat.m[2][3],
+			rotateMat.m[3][0], rotateMat.m[3][1], rotateMat.m[3][2], rotateMat.m[3][3]);
 		ImGui::End();
 		//ImGui::Begin("Bezier");
 		//for (int i = 0; i < 3; i++)
