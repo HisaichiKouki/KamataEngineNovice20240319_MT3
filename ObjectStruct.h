@@ -59,6 +59,7 @@ struct Spring {
 	Vector3 anchor;
 	float naturalLength;
 	float stiffness;
+	float dampingCoefficient;
 };
 
 struct Ball

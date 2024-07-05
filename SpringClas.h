@@ -13,7 +13,7 @@ public:
 	void Init();
 	void Update();
 	void Draw(const Matrix4x4& viewProjectionMat, const Matrix4x4& viewportMat);
-
+	void SetGravity(const Vector3& set) { gravity = set; }
 private:
 
 
@@ -25,9 +25,12 @@ private:
 		restPosition,
 		displacement,
 		restoringForce,
-		force;
+		force,
+		dampingForce;
 
 	float length,
 		deltatime;
+
+	Vector3 gravity;
 };
 

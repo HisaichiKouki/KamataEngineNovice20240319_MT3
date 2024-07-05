@@ -27,7 +27,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Camera* camera = new Camera;
 	std::unique_ptr<SpringClas>spring_;
 	spring_ = std::make_unique<SpringClas>();
-	
+	const Vector3 kGravity = { 0,-9.8f,0 };
+	spring_->SetGravity(kGravity);
 	bool start=false;
 
 	// キー入力結果を受け取る箱
