@@ -54,3 +54,19 @@ struct OBB
 	Vector3 orientations[3];
 	Vector3 size;
 };
+
+struct Spring {
+	Vector3 anchor;
+	float naturalLength;
+	float stiffness;
+};
+
+struct Ball
+{
+	Vector3 position;
+	Vector3 velocity;
+	Vector3 aceleration;
+	float mass;
+	float radius;
+	unsigned int color;
+};

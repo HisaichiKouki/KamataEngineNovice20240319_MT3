@@ -53,6 +53,18 @@
     <ClCompile Include="Camera.cpp">
       <Filter>KamataEngine</Filter>
     </ClCompile>
+    <ClCompile Include="Catmullrom.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="CatmullRomSpline.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="InputManager.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="SpringClas.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\KamataEngine\DirectXGame\audio\Audio.h">
@@ -132,5 +144,9 @@
     <ClInclude Include="ProjectFunction.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Catmullrom.h" />
+    <ClInclude Include="CatmullRomSpline.h" />
+    <ClInclude Include="InputManager.h" />
+    <ClInclude Include="SpringClas.h" />
   </ItemGroup>
 </Project>

@@ -1,15 +1,18 @@
 #include <Novice.h>
+#include <imgui.h>
+#include <stdlib.h>
+#include <memory>
+
 #include "Vector3AndMatrix4x4.h"
 #include "Glid.h"
 #include "ObjectStruct.h"
 #include "ProjectFunction.h"
-#include <imgui.h>
 #include "Collision.h"
 #include "InputManager.h"
 #include "Camera.h"
-#include <stdlib.h>
-
 #include "CatmullRomSpline.h"
+#include "SpringClas.h"
+
 
 const char kWindowTitle[] = "LD2A_01_ヒサイチ_コウキ";
 
@@ -22,8 +25,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Novice::Initialize(kWindowTitle, kWindowWidth, kWindowHeight);
 
 	Camera* camera = new Camera;
-	
-	CatmullRomSpline* spline = new CatmullRomSpline();
+	std::unique_ptr<SpringClas>spring_;
+	spring_ = std::make_unique<SpringClas>();
 	
 
 	// キー入力結果を受け取る箱
@@ -46,7 +49,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		
 		camera->Update();
-
+		spring_->Update();
 
 
 
@@ -59,9 +62,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///------------------///
 		DrawGridLine(camera->GetviewProjection(), camera->GetViewportMatrix());
 		//DrawAABB(aabb1, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
-		spline->Debug(camera->GetviewProjection(), camera->GetViewportMatrix(), BLACK);
+		
 
-		spline->NoviceDraw(camera->GetviewProjection(), camera->GetViewportMatrix(),BLACK);
+		spring_->Draw(camera->GetviewProjection(), camera->GetViewportMatrix());
 		camera->DebugDraw();
 		
 

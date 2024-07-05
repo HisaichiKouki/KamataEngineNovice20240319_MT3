@@ -7,7 +7,7 @@
 
 void DrawGridLine(const Matrix4x4& viewProjectionMat, const Matrix4x4& viewportMat);
 
-void DrawGridSphere(const Sphere& sphere,int segment, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
+void DrawGridSphere(const Sphere& sphere,int division, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
 
 void DrawAxis(const Matrix4x4& worldMatrix,const Matrix4x4& viewProjection, const Matrix4x4& viewportMatrix);
 
@@ -26,3 +26,4 @@ void DrawOBB(const OBB& obb, const Matrix4x4& viewProjectionMatrix, const Matrix
 void OBBPointDraw(const OBB& obb, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix);
 
 void Obb2NormalPlaneDraw(const OBB& obb1, const OBB& obb2, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix,int planeNum);
+Vector3 world2Screen(const Vector3& pos, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix);

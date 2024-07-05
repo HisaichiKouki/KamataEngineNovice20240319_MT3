@@ -57,10 +57,10 @@ void DrawGridLine(const Matrix4x4& viewProjectionMat, const Matrix4x4& viewportM
 
 }
 
-void DrawGridSphere(const Sphere& sphere, int segment , const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color)
+void DrawGridSphere(const Sphere& sphere, int division , const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color)
 {
 	float pi = 3.1415926535f;//
-	const uint32_t kSubdivision = segment;
+	const uint32_t kSubdivision = division;
 	float kLatD = pi / kSubdivision;
 	float kLonD = (2.0f * pi) / kSubdivision;
 	//const float kLatEvery = thetaD;//緯度
@@ -551,5 +551,12 @@ void Obb2NormalPlaneDraw(const OBB& obb1, const OBB& obb2, const Matrix4x4& view
 		//Novice::DrawLine(int(projectionPoint2[i].x), int(projectionPoint2[i].y), int(point2[i].x), int(point2[i].y), 0xff00ff33);
 	}
 }
+
+Vector3 world2Screen(const Vector3& pos, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix)
+{
+	return Vector3(Transform(Transform(pos, viewProjectionMatrix), viewportMatrix));
+}
+
+
 
 
