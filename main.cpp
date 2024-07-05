@@ -23,14 +23,44 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Novice::Initialize(kWindowTitle, kWindowWidth, kWindowHeight);
 
 	Camera* camera = new Camera;
-	
-	//CatmullRomSpline* spline = new CatmullRomSpline();
-	Vector3 controlPoint[3]{
-		{-0.8f,0.58f,1.0f},
-		{1.76f,1.0f,-0.3f},
-		{0.94f,-0.7f,2.3f}
+
+	Vector3 translates[3]{
+		{0.2f,1.0f,0.0f},
+		{0.4f,0.0f,0.0f},
+		{0.3f,0.0f,0.0f}
+	};
+	Vector3 rotates[3]{
+		{0.0f,0.0f,-6.8f},
+		{0.0f,0.0f,-1.4f},
+		{0.0f,0.0f,0.0f},
+	};
+	Vector3 scales[3]{
+		{1.0f,1.0f,1.0f},
+		{1.0f,1.0f,1.0f},
+		{1.0f,1.0f,1.0f},
 	};
 
+	Matrix4x4 worldMatrixes[3];
+	Matrix4x4 calculationMat;
+
+
+	worldMatrixes[0] = MakeAffineMatrix(scales[0], rotates[0], translates[0]);
+
+	calculationMat = MakeAffineMatrix(scales[1], rotates[1], translates[1]);
+	worldMatrixes[1] = Multiply(calculationMat, worldMatrixes[0]);
+
+	calculationMat = MakeAffineMatrix(scales[2], rotates[2], translates[2]);
+	worldMatrixes[2] = Multiply(calculationMat, worldMatrixes[1]);
+
+	Sphere sphere[3];
+
+	for (int i = 0; i < 3; i++)
+	{
+		/*sphere[i].center.x = worldMatrixes[i].m[3][0];
+		sphere[i].center.y = worldMatrixes[i].m[3][1];
+		sphere[i].center.z = worldMatrixes[i].m[3][2];*/
+		sphere[i].radius = 0.1f;
+	}
 	// キー入力結果を受け取る箱
 	char keys[256] = { 0 };
 	char preKeys[256] = { 0 };
@@ -49,7 +79,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///------------------///
 
-		
+		worldMatrixes[0] = MakeAffineMatrix(scales[0], rotates[0], translates[0]);
+
+		calculationMat = MakeAffineMatrix(scales[1], rotates[1], translates[1]);
+		worldMatrixes[1] = Multiply(calculationMat, worldMatrixes[0]);
+
+		calculationMat = MakeAffineMatrix(scales[2], rotates[2], translates[2]);
+		worldMatrixes[2] = Multiply(calculationMat, worldMatrixes[1]);
+	/*	for (int i = 0; i < 3; i++)
+		{
+			sphere[i].center.x = worldMatrixes[i].m[3][0];
+			sphere[i].center.y = worldMatrixes[i].m[3][1];
+			sphere[i].center.z = worldMatrixes[i].m[3][2];
+		}*/
 		camera->Update();
 
 
@@ -63,23 +105,35 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///------------------///
 		DrawGridLine(camera->GetviewProjection(), camera->GetViewportMatrix());
-		//DrawAABB(aabb1, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
-		//spline->Debug(camera->GetviewProjection(), camera->GetViewportMatrix(), BLACK);
-		DrawBezier(controlPoint[0], controlPoint[1], controlPoint[2], camera->GetviewProjection(), camera->GetViewportMatrix(), BLUE);
-		DebugBezier(controlPoint[0], controlPoint[1], controlPoint[2], camera->GetviewProjection(), camera->GetViewportMatrix(), BLACK);
-		//spline->NoviceDraw(camera->GetviewProjection(), camera->GetViewportMatrix(),BLACK);
+
+		DrawGridSphere(sphere[0], 8, Multiply( worldMatrixes[0], camera->GetviewProjection()), camera->GetViewportMatrix(), RED);
+		DrawGridSphere(sphere[1], 8, camera->GetviewProjection(), camera->GetViewportMatrix(), GREEN);
+		DrawGridSphere(sphere[2], 8, camera->GetviewProjection(), camera->GetViewportMatrix(), BLUE);
+		DrawLine3D(sphere[0].center, sphere[1].center, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
+		DrawLine3D(sphere[1].center, sphere[2].center, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
 		camera->DebugDraw();
-		
-		ImGui::Begin("Bezier");
+
+		ImGui::Begin("Debug");
 		for (int i = 0; i < 3; i++)
 		{
-			
-			std::string label = "Point [" + std::to_string(i) + "]";
-			ImGui::DragFloat3(label.c_str(), &controlPoint[i].x, 0.03f);
-			//ImGui::DragFloat3("controlPoint", &controlPoints_[i].x, 0.03f);
-
+			std::string scale = "scale [" + std::to_string(i) + "]";
+			ImGui::DragFloat3(scale.c_str(), &scales[i].x, 0.03f);
+			std::string rotata = "rotate [" + std::to_string(i) + "]";
+			ImGui::DragFloat3(rotata.c_str(), &rotates[i].x, 0.03f);
+			std::string translate = "translate [" + std::to_string(i) + "]";
+			ImGui::DragFloat3(translate.c_str(), &translates[i].x, 0.03f);
 		}
 		ImGui::End();
+		//ImGui::Begin("Bezier");
+		//for (int i = 0; i < 3; i++)
+		//{
+		//	
+		//	std::string label = "Point [" + std::to_string(i) + "]";
+		//	ImGui::DragFloat3(label.c_str(), &controlPoint[i].x, 0.03f);
+		//	//ImGui::DragFloat3("controlPoint", &controlPoints_[i].x, 0.03f);
+
+		//}
+		//ImGui::End();
 
 		//DrawAxis(spher.worldMatrix, viewProjection, viewportMatrix);
 		///------------------///
