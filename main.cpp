@@ -12,7 +12,7 @@
 #include "Camera.h"
 #include "CatmullRomSpline.h"
 #include "SpringClas.h"
-
+#include "CircleMotion.h"
 
 const char kWindowTitle[] = "LD2A_01_ヒサイチ_コウキ";
 
@@ -25,11 +25,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Novice::Initialize(kWindowTitle, kWindowWidth, kWindowHeight);
 
 	Camera* camera = new Camera;
-	std::unique_ptr<SpringClas>spring_;
-	spring_ = std::make_unique<SpringClas>();
-	const Vector3 kGravity = { 0,-9.8f,0 };
-	spring_->SetGravity(kGravity);
-	bool start=false;
+	//std::unique_ptr<SpringClas>spring_;
+	//spring_ = std::make_unique<SpringClas>();
+	//const Vector3 kGravity = { 0,-9.8f,0 };
+	//spring_->SetGravity(kGravity);
+
+	std::unique_ptr<CircleMotion>circleMotion;
+	circleMotion = std::make_unique<CircleMotion>();
+
+	bool start = false;
 
 	// キー入力結果を受け取る箱
 	char keys[256] = { 0 };
@@ -49,16 +53,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///------------------///
 
-		
+
 		camera->Update();
-		if (InputManager::GetIsPressKey(DIK_SPACE))
-		{
-			start = true;
-		}
+
 		if (start)
 		{
-			spring_->Update();
-
+			//spring_->Update();
+			circleMotion->Update();
 		}
 
 
@@ -72,15 +73,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///------------------///
 		DrawGridLine(camera->GetviewProjection(), camera->GetViewportMatrix());
 		//DrawAABB(aabb1, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
-		
 
-		spring_->Draw(camera->GetviewProjection(), camera->GetViewportMatrix());
+		circleMotion->Draw(camera->GetviewProjection(), camera->GetViewportMatrix());
+		circleMotion->Debug();
+		//spring_->Draw(camera->GetviewProjection(), camera->GetViewportMatrix());
 		camera->DebugDraw();
-		Novice::ScreenPrintf(100, 100, "Space start");
 
-		spring_->Debug();
+		//spring_->Debug();
 
 		//DrawAxis(spher.worldMatrix, viewProjection, viewportMatrix);
+
+		ImGui::Begin("window");
+		if (ImGui::Button("start")) {
+			start = true;
+			//strcpy(text1, "button 1");
+		}
+
+		ImGui::End();
 		///------------------///
 		/// ↑描画処理ここまで
 		///------------------///

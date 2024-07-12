@@ -118,6 +118,7 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Catmullrom.cpp" />
     <ClCompile Include="CatmullRomSpline.cpp" />
+    <ClCompile Include="CircleMotion.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="Glid.cpp" />
     <ClCompile Include="InputManager.cpp" />
@@ -157,6 +158,7 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Catmullrom.h" />
     <ClInclude Include="CatmullRomSpline.h" />
+    <ClInclude Include="CircleMotion.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Glid.h" />
     <ClInclude Include="InputManager.h" />
