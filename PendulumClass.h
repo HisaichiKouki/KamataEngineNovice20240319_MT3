@@ -14,6 +14,7 @@ public :
 	void Init();
 	void Update();
 	void Draw(const Matrix4x4& viewProjectionMat, const Matrix4x4& viewportMat);
+	void Debug();
 private:
 	Pendulum pendlum;
 	float deltaTime;

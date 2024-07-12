@@ -557,6 +557,11 @@ Vector3 world2Screen(const Vector3& pos, const Matrix4x4& viewProjectionMatrix, 
 	return Vector3(Transform(Transform(pos, viewProjectionMatrix), viewportMatrix));
 }
 
-
+void DrawLine3D(const Vector3& p1, const Vector3& p2, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, int color)
+{
+	Vector3 screenP1 = Transform(Transform(p1, viewProjectionMatrix), viewportMatrix);
+	Vector3 screenP2 = Transform(Transform(p2, viewProjectionMatrix), viewportMatrix);
+	Novice::DrawLine(int(screenP1.x), int(screenP1.y), int(screenP2.x), int(screenP2.y), color);
+}
 
 

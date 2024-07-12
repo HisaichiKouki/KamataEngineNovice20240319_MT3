@@ -27,3 +27,5 @@ void OBBPointDraw(const OBB& obb, const Matrix4x4& viewProjectionMatrix, const M
 
 void Obb2NormalPlaneDraw(const OBB& obb1, const OBB& obb2, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix,int planeNum);
 Vector3 world2Screen(const Vector3& pos, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix);
+
+void DrawLine3D(const Vector3& p1, const Vector3& p2, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, int color);

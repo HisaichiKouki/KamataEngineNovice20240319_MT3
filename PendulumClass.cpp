@@ -2,6 +2,7 @@
 
 PendulumClass::PendulumClass()
 {
+	Init();
 }
 
 void PendulumClass::Init()
@@ -15,9 +16,10 @@ void PendulumClass::Init()
 	};
 	deltaTime = 1.0f / 60.0f;
 	sphere = {
-		.center = {},
-		.radius = 0.1f
+		.center = {0,0,0},
+		.radius = 0.05f
 	};
+	pos = { 0,0,0 };
 }
 
 void PendulumClass::Update()
@@ -36,5 +38,18 @@ void PendulumClass::Update()
 void PendulumClass::Draw(const Matrix4x4& viewProjectionMat, const Matrix4x4& viewportMat)
 {
 	DrawGridSphere(sphere, 12, viewProjectionMat, viewportMat, WHITE);
+	DrawLine3D(pendlum.anchor, sphere.center, viewProjectionMat, viewportMat, WHITE);
 
+}
+
+void PendulumClass::Debug()
+{
+#ifdef _DEBUG
+
+	ImGui::Begin("Pendulum");
+	ImGui::Text("pos={%f,%f,%f}", pos.x, pos.y, pos.z);
+	ImGui::Text("pendlum.anchor={%f,%f,%f}", pendlum.anchor.x, pendlum.anchor.y, pendlum.anchor.z);
+	//ImGui::Text("pendlum.angle={%f,%f,%f}", pendlum.angle.x, aceleration.y, aceleration.z);
+	ImGui::End();
+#endif
 }

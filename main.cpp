@@ -13,6 +13,7 @@
 #include "CatmullRomSpline.h"
 #include "SpringClas.h"
 #include "CircleMotion.h"
+#include "PendulumClass.h"
 
 const char kWindowTitle[] = "LD2A_01_ヒサイチ_コウキ";
 
@@ -32,6 +33,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	std::unique_ptr<CircleMotion>circleMotion;
 	circleMotion = std::make_unique<CircleMotion>();
+	std::unique_ptr<PendulumClass>pendulum;
+	pendulum = std::make_unique<PendulumClass>();
 
 	bool start = false;
 
@@ -59,7 +62,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		if (start)
 		{
 			//spring_->Update();
-			circleMotion->Update();
+			pendulum->Update();
 		}
 
 
@@ -74,12 +77,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		DrawGridLine(camera->GetviewProjection(), camera->GetViewportMatrix());
 		//DrawAABB(aabb1, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
 
-		circleMotion->Draw(camera->GetviewProjection(), camera->GetViewportMatrix());
-		circleMotion->Debug();
+		pendulum->Draw(camera->GetviewProjection(), camera->GetViewportMatrix());
+		//circleMotion->Debug();
 		//spring_->Draw(camera->GetviewProjection(), camera->GetViewportMatrix());
 		camera->DebugDraw();
 
-		//spring_->Debug();
+		pendulum->Debug();
 
 		//DrawAxis(spher.worldMatrix, viewProjection, viewportMatrix);
 
