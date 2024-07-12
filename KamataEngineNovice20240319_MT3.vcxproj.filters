@@ -65,6 +65,12 @@
     <ClCompile Include="SpringClas.cpp">
       <Filter>KamataEngine</Filter>
     </ClCompile>
+    <ClCompile Include="CircleMotion.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="PendulumClass.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\KamataEngine\DirectXGame\audio\Audio.h">
@@ -148,5 +154,7 @@
     <ClInclude Include="CatmullRomSpline.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="SpringClas.h" />
+    <ClInclude Include="CircleMotion.h" />
+    <ClInclude Include="PendulumClass.h" />
   </ItemGroup>
 </Project>

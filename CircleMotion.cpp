@@ -9,7 +9,7 @@ void CircleMotion::Init()
 {
 	deltatime = 1.0f / 60.0f;
 	angle = 0.0f;
-	anglarVelocity = 3.14f;
+	anglarVelocity = 3.14f*2/3;
 	centerPos = { 0,0,0 };
 	pos = { 0.8f,0,0 };
 	radius = { 0.8f,0.8f,0 };
