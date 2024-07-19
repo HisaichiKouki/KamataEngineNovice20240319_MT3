@@ -14,6 +14,8 @@
 #include "SpringClas.h"
 #include "CircleMotion.h"
 #include "PendulumClass.h"
+#include "ConicalPendulumClass.h"
+
 
 const char kWindowTitle[] = "LD2A_01_ヒサイチ_コウキ";
 
@@ -31,12 +33,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//const Vector3 kGravity = { 0,-9.8f,0 };
 	//spring_->SetGravity(kGravity);
 
-	std::unique_ptr<CircleMotion>circleMotion;
-	circleMotion = std::make_unique<CircleMotion>();
-	std::unique_ptr<PendulumClass>pendulum;
-	pendulum = std::make_unique<PendulumClass>();
+	std::unique_ptr<ConicalPendulumClass>circleMotion;
+	circleMotion = std::make_unique<ConicalPendulumClass>();
+	/*std::unique_ptr<ConicalPendulumClass>pendulum;
+	pendulum = std::make_unique<ConicalPendulumClass>();*/
 
-	bool start = false;
+	//bool start = false;
 
 	// キー入力結果を受け取る箱
 	char keys[256] = { 0 };
@@ -59,12 +61,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		camera->Update();
 
-		if (start)
-		{
-			//spring_->Update();
-			pendulum->Update();
-		}
-
+		//if (start)
+		//{
+		//	//spring_->Update();
+		//	pendulum->Update();
+		//}
+		circleMotion->Update();
 
 
 		///------------------///
@@ -77,22 +79,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		DrawGridLine(camera->GetviewProjection(), camera->GetViewportMatrix());
 		//DrawAABB(aabb1, camera->GetviewProjection(), camera->GetViewportMatrix(), WHITE);
 
-		pendulum->Draw(camera->GetviewProjection(), camera->GetViewportMatrix());
+		//pendulum->Draw(camera->GetviewProjection(), camera->GetViewportMatrix());
 		//circleMotion->Debug();
 		//spring_->Draw(camera->GetviewProjection(), camera->GetViewportMatrix());
 		camera->DebugDraw();
-
-		pendulum->Debug();
+		circleMotion->Draw(camera->GetviewProjection(), camera->GetViewportMatrix());
+		circleMotion->Debug();
+		//pendulum->Debug();
 
 		//DrawAxis(spher.worldMatrix, viewProjection, viewportMatrix);
 
-		ImGui::Begin("window");
-		if (ImGui::Button("start")) {
-			start = true;
-			//strcpy(text1, "button 1");
-		}
+		//ImGui::Begin("window");
+		//if (ImGui::Button("start")) {
+		//	start = true;
+		//	//strcpy(text1, "button 1");
+		//}
 
-		ImGui::End();
+		//ImGui::End();
 		///------------------///
 		/// ↑描画処理ここまで
 		///------------------///

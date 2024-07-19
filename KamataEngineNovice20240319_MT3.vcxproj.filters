@@ -71,6 +71,9 @@
     <ClCompile Include="PendulumClass.cpp">
       <Filter>KamataEngine</Filter>
     </ClCompile>
+    <ClCompile Include="ConicalPendulumClass.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\KamataEngine\DirectXGame\audio\Audio.h">
@@ -156,5 +159,6 @@
     <ClInclude Include="SpringClas.h" />
     <ClInclude Include="CircleMotion.h" />
     <ClInclude Include="PendulumClass.h" />
+    <ClInclude Include="ConicalPendulumClass.h" />
   </ItemGroup>
 </Project>
