@@ -37,7 +37,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//circleMotion = std::make_unique<ConicalPendulumClass>();
 
 	Plane plane;
-	plane.normal = Normalize({ -0.2f,0.9f,-0.3f });
+	plane.normal = Normalize({ -0.2f,1.2f,-0.3f });
 	plane.distance = 0;
 	Ball ball;
 	ball = {
