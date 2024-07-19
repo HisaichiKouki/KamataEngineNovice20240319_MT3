@@ -71,6 +71,14 @@ Vector3 Perpendicular(const Vector3& vector)
 	return {0.0f,-vector.z,vector.y};
 }
 
+Vector3 Reflect(const Vector3& input, const Vector3& normal)
+{
+
+	Vector3 result = (normal * 2 * Dot(input, normal)) * -1;
+	result += input;
+	return result;
+}
+
 void Matrix4x4ScreenPrintf(int x, int y, const Matrix4x4& matrix, const char* label)
 {
 	Novice::ScreenPrintf(x, y, "%s", label);
