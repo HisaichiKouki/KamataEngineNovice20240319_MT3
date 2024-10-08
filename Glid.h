@@ -1,8 +1,10 @@
 #pragma once
+#define NOMINMAX
 #include "Vector3AndMatrix4x4.h"
 #include <Novice.h>
 #include "ObjectStruct.h"
 #include <stdlib.h>
+#include <algorithm>
 #include "ProjectFunction.h"
 
 void DrawGridLine(const Matrix4x4& viewProjectionMat, const Matrix4x4& viewportMat);

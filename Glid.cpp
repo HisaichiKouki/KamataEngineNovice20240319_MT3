@@ -297,7 +297,6 @@ void ReAABB(AABB& aabb)
 	aabb.max.y = (std::max)(aabb.min.y, aabb.max.y);
 	aabb.min.z = (std::min)(aabb.min.z, aabb.max.z);
 	aabb.max.z = (std::max)(aabb.min.z, aabb.max.z);
-
 }
 
 void DrawOBB(const OBB& obb, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color)
